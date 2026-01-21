@@ -15,7 +15,12 @@ updates:
           - "patch"
 
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/backend"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "docker"
+    directory: "/frontend"
     schedule:
       interval: "monthly"
 
