@@ -1,3 +1,18 @@
+# Secrets
+/secrets/*.txt
 .env
-secrets
-dev_hot_reaload.txt
+.certs/
+
+# Docker
+.docker/
+
+# Dependencies
+/frontend/node_modules
+/backend/vendor
+
+# IDE
+.vscode/
+.idea/
+
+# Doc
+suggestions.txt
