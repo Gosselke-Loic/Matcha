@@ -1,6 +1,9 @@
 services:
-  frontend:
-    build: ./frontend
+  frontend-prod:
+    build:
+      context : ./frontend
+      dockerfile: Dockerfile.prod
+    profiles: [prod]
     ports:
       - "80:80"
       - "443:443"
@@ -13,12 +16,24 @@ services:
       - public
       - private
     depends_on:
-      -backend
+      - backend
+
+  frontend-dev:
+    build:
+      context : ./frontend
+      dockerfile: Dockerfile.dev
+    profiles: [dev]
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
   
   backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
+    profiles: [prod]
     container_name: api-backend
     restart: always
     environment:
@@ -27,7 +42,7 @@ services:
       DB_USER: matcha_user
       PORT: 3000
     volumes:
-      uploads:/app/uploads
+      - uploads:/app/uploads
     secrets:
       - db-password
     networks:
@@ -39,6 +54,7 @@ services:
   database:
     image: postgres:16-alpine
     container_name: postgres-db
+    profiles: [prod]
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
