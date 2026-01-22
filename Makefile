@@ -10,10 +10,11 @@ all:	$(NAME)
 
 $(NAME):
 	@echo "$(GREEN) Starting production in detach $(DEF_COLOR)"
-	@docker compose up -d --build
+	@docker compose --profile prod up -d --build
 	@echo "$(GREEN) Ready! $(DEF_COLOR)"
 
 dev:
 	@docker compose --profile dev up
 
 .PHONY:			all dev
+
