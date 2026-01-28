@@ -1,15 +1,14 @@
 services:
-  frontend-prod:
+  frontend:
     build:
       context : ./frontend
       dockerfile: Dockerfile.prod
-    profiles: [prod]
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro # for dev only
-      - ./certs:/etc/nginx/certs:ro # Pour SSL
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/certs:ro
       - uploads:/usr/share/nginx/html/uploads:ro
     restart: unless-stopped
     networks:
@@ -17,23 +16,11 @@ services:
       - private
     depends_on:
       - backend
-
-  frontend-dev:
-    build:
-      context : ./frontend
-      dockerfile: Dockerfile.dev
-    profiles: [dev]
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
   
   backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    profiles: [prod]
     container_name: api-backend
     restart: always
     environment:
@@ -54,7 +41,6 @@ services:
   database:
     image: postgres:16-alpine
     container_name: postgres-db
-    profiles: [prod]
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
@@ -78,16 +64,3 @@ networks:
   private:
     internal: true
     driver: bridge
-
-volumes:
-  db_data:
-  uploads:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/uploads
-
-secrets:
-  db-password:
-    file: ./secrets/db_password.txt
