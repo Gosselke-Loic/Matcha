@@ -1,9 +1,16 @@
 import path from 'path';
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [
+		react(),
+		tailwindcss(),
+		tanstackRouter({ target: "react", autoCodeSplitting: true }),
+	],
 	server: {
 		host: true,
 		port: 5173,
@@ -14,10 +21,7 @@ export default defineConfig({
 	},
 	resolve: {
     alias: {
-		"@hooks": path.resolve(__dirname, "./src/hooks"),
-		"@styles": path.resolve(__dirname, "./src/styles"),
-		"@services": path.resolve(__dirname, "./src/services"),
-		"@interfaces": path.resolve(__dirname, "./src/interfaces"),
+		"@routes": path.resolve(__dirname, "./src/routes"),
 		"@components": path.resolve(__dirname, "./src/components")
     }
   }
