@@ -64,3 +64,16 @@ networks:
   private:
     internal: true
     driver: bridge
+
+volumes:
+  db_data:
+  uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/uploads
+
+secrets:
+  db-password:
+    file: ./secrets/db_password.txt
