@@ -13,7 +13,6 @@ services:
       - public
       - private
     depends_on:
-      - backend
       - frontend
 
   frontend:
@@ -25,47 +24,6 @@ services:
       - /app/node_modules
     networks:
       - private
-  
-  backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: api-backend
-    restart: always
-    environment:
-      DB_HOST: database
-      DB_NAME: matcha
-      DB_USER: matcha_user
-      PORT: 3000
-    #volumes:
-      #- uploads:/app/uploads
-    secrets:
-      - db-password
-    networks:
-      - private
-    depends_on:
-      database:
-        condition: service_healthy
-
-  database:
-    image: postgres:16-alpine
-    container_name: postgres-db
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - private
-    restart: always
-    secrets:
-      - db-password
-    environment:
-      POSTGRES_DB: matcha
-      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
-      POSTGRES_USER: matcha_user
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U matcha_user -d matcha"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 networks:
   public:
