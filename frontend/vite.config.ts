@@ -7,9 +7,9 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
 	plugins: [
-		react(),
-		tailwindcss(),
 		tanstackRouter({ target: "react", autoCodeSplitting: true }),
+		tailwindcss(),
+		react(),
 	],
 	server: {
 		host: true,
@@ -20,9 +20,11 @@ export default defineConfig({
 		}
 	},
 	resolve: {
-    alias: {
-		"@routes": path.resolve(__dirname, "./src/routes"),
-		"@components": path.resolve(__dirname, "./src/components")
-    }
-  }
+	 alias: {
+	  '@': path.resolve(__dirname, './src'),
+          '@lib': path.resolve(__dirname, './src/lib'),
+          '@routes': path.resolve(__dirname, './src/routes'),
+          '@features': path.resolve(__dirname, './src/features')
+	 }
+       }
 })
