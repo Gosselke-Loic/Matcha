@@ -1,13 +1,22 @@
 services:
+  frontend-prod:
+    build:
+      context : ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
   backend:
     build: ./backend
-    command: python manage.py run -h 0.0.0.0
+    command: gunicorn --bind 0.0.0.0:5000 manage:app
     container_name: api-backend
     restart: always
     env_file:
       - ./.env.dev
-    volumes:
-      - ./backend/:/usr/src/app/
     ports:
       - 5001:5000
     depends_on:
