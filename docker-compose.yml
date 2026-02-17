@@ -33,6 +33,7 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
+    command: python manage.py run --host 0.0.0.0
     profiles: [prod-back]
     container_name: api-backend
     restart: always
@@ -40,18 +41,19 @@ services:
       DB_HOST: database
       DB_NAME: matcha
       DB_USER: matcha_user
-      PORT: 3000
-    #volumes:
-     # - uploads:/app/uploads
+      FLASK_APP: project/__init__.py
+      FLASK_DEBUG: 1
+    volumes:
+      - ./backend/:/usr/src/app/
     ports:
       - 5001:5000
     secrets:
       - db-password
     networks:
       - private
-    depends_on:
-      database:
-        condition: service_healthy
+    #depends_on:
+    #  database:
+    #    condition: service_healthy
 
   database:
     image: postgres:16-alpine
