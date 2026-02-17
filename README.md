@@ -1,7 +1,23 @@
-1. Ajouter un dossier "secrets" avec un fichier "db_password.txt" et le mot de passe dedant.
+# Matcha
 
-2. Dans le dossier "certs" lancer cette commande -> openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
-   - Pour des fake certs pour Dev.
+A complete full-stack dating web application that allows users to find and connect with potential matches based on proximity, interests, and popularity.
 
-3. Ajouter .env a la racine avec "COMPOSE_PROFILES=dev" ou "COMPOSE_PROFILES=prod" pour switch d'environment.
-   - Ex. -> docker compose --profile dev up / docker compose --profile prod up
+## Overview
+Matcha is a high-performance web app featuring real-time interactions, geolocated matching, and secure user management. Built with a focus on modern web standards and security.
+
+> **Status:** In Progress (Collaborative Project)
+
+## Tech Stack
+- **Frontend:** React, Tanstack Router/query, Tailwind CSS, Zustand (state management)
+- **Backend:** Flask (Python)
+- **Database:** PostgreSQL
+- **Real-time:** Native Websocket (Instant messaging & notifications)
+- **Deployment:** Docker, Docker Compose
+
+## Key Features
+- **Smart Matching:** Algorithm based on common tags, fame rating, and location.
+- **Advanced Search:** Filter users by age, distance, and interests.
+- **Real-time Chat:** Instant messaging with matched users.
+- **Live Notifications:** Alerts for likes, profile views, and messages.
+- **Profile Management:** Secure auth, email verification, and multi-photo upload.
+- **Geolocation:** Automatic user localization with manual override.
