@@ -7,6 +7,8 @@
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
 
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -25,9 +27,12 @@
 
     "paths": {
       "@/*": ["src/*"],
-      "@lib/*": ["src/lib/*"],
+      "@api/*": ["src/api/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@assets/*": ["src/assets/*"],
       "@routes/*": ["src/routes/*"],
-      "@features/*": ["src/features/*"]
+      "@features/*": ["src/features/*"],
+      "@components/*": ["src/components/*"],
     }
   },
   "include": ["src", "routeTree.gen.ts"]

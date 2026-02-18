@@ -12,10 +12,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ],
-    "overrides": {
-      "zod": "^4.3.6"
-    }
+    ]
   },
   "engines": {
     "node": ">=22.0.0",
