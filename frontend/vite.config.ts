@@ -1,23 +1,30 @@
 import path from 'path';
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [
+		tanstackRouter({ target: "react", autoCodeSplitting: true }),
+		tailwindcss(),
+		react(),
+	],
 	server: {
 		host: true,
 		port: 5173,
 		hmr: {
-			clientPort: 5173
+			clientPort: 8443,
+			protocol: "wss"
 		}
 	},
 	resolve: {
-    alias: {
-		"@hooks": path.resolve(__dirname, "./src/hooks"),
-		"@styles": path.resolve(__dirname, "./src/styles"),
-		"@services": path.resolve(__dirname, "./src/services"),
-		"@interfaces": path.resolve(__dirname, "./src/interfaces"),
-		"@components": path.resolve(__dirname, "./src/components")
-    }
-  }
+	 alias: {
+	  '@': path.resolve(__dirname, './src'),
+          '@lib': path.resolve(__dirname, './src/lib'),
+          '@routes': path.resolve(__dirname, './src/routes'),
+          '@features': path.resolve(__dirname, './src/features')
+	 }
+       }
 })
