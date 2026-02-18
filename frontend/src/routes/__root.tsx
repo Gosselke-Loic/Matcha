@@ -5,8 +5,9 @@ import {
 import type { QueryClient } from '@tanstack/react-query';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
+import GlobalSpinner from '@/components/spinner/GlobalSpinner'; 
+import { GeneralError } from '@/components/errors/GeneralError'; 
 import type { useAuthStore } from '@/features/auth/store/auth-store';
-import { GeneralError } from '@/components/error-components/GeneralError'; 
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -16,6 +17,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
+      <GlobalSpinner />
       <Outlet />
       <TanStackRouterDevtools />
     </>
