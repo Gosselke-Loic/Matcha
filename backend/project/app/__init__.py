@@ -10,13 +10,9 @@ from flask_jwt_extended import (
 )
 
 from .auth import bp as auth_bp, jwt
+from .models import db
 
 # --- Setup ---
-app = Flask(__name__)
-app.config.from_object("project.config.Config")
-db = SQLAlchemy(app)
-jwt = JWTManager(app)
-
 
 
 def create_app(config_object="project.config.Config"):
@@ -30,7 +26,7 @@ def create_app(config_object="project.config.Config"):
 
     return app
 
-
+app = create_app()
 
 """ # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
