@@ -2,75 +2,118 @@ import { z } from 'zod';
 
 import ApiError from './ApiError';
 
-const BASE_URL: string = "To do";
+const BASE_URL: string = "https://localhost:3000/api";
 
-type ApiResponse<T> = {
-  data: T,
-  status: number
+const attemptRefresh = async (): Promise<boolean> => {
+  try {
+    const response = await fetch("/auth/refresh", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    return (response.ok)
+  } catch {
+    return (false);
+  };
 };
 
-interface ApiOptions<T> extends Omit<RequestInit, 'body'> {
-  schema?: z.ZodSchema<T>
-};
-
-async function handleResponse<T>(
+async function handleResponse<S extends z.ZodType>(
   response: Response,
-  schema?: z.ZodSchema<T> 
-): Promise<ApiResponse<T>> {
+  schema: S
+): Promise<z.infer<S>> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new ApiError(
       response.status,
-      errorData.massage || `Error HTTP ${response.status}`,
+      errorData.message || `Error HTTP ${response.status}`,
       errorData
     );
   };
 
-  if (response.status === 204) {
-    return ({ data: {} as T, status: 204 })
+  const isNoContent = response.status === 204
+    || response.headers.get("content-length") === "0";
+
+  if (isNoContent) {
+    return (schema.parse(undefined));
   };
 
   const json = await response.json();
 
-  if (schema) {
-    const validateData = schema.parse(json);
-    return ({ data: validateData, status: response.status })
-  };
-  
-  return ({ data: json, status: response.status });
+  return (schema.parse(json));
 };
 
 export const api = {
-  get: async <T>(
+  async request<S extends z.ZodType>(
     endpoint: string,
-    options: ApiOptions<T> = {} 
-  ) => {
+    options: RequestInit & { schema: S },
+    retry: boolean = true
+  ): Promise<z.infer<S>> {
     const { schema, ...fetchOptions } = options;
-
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
+    
+    let response = await fetch(`${BASE_URL}${endpoint}`, {
       ...fetchOptions,
-      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        ...fetchOptions.headers
+      },
       credentials: "include"
     });
 
-    return (handleResponse<T>(response, schema));
+    if (response.status === 401 && retry) {
+      const errorData = await response.clone().json().catch(() => ({}));
+
+      if (errorData.code === "TOKEN_EXPIRED") {
+        const success = await attemptRefresh();
+        if (success) {
+          return api.request(endpoint, options, false);
+        } else {
+          // To do logout
+        };
+      };
+    };
+
+    return (handleResponse<S>(response, schema));
   },
-  post: async <T>(
+
+  get: async <S extends z.ZodType>(
+    endpoint: string,
+    schema: S 
+  ) => {
+    return api.request(endpoint, {
+      method: "GET",
+      schema: schema
+    });
+  },
+  post: async <S extends z.ZodType>(
     endpoint: string,
     body: unknown,
-    options: ApiOptions<T> = {}
+    schema: S
   ) => {
-    const { schema, ...fetchOptions } = options;
-
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
-      ...fetchOptions,
+    return api.request(endpoint, {
       method: "POST",
-      headers: { 'Content-Type': 'application/json', ...fetchOptions?.headers },
       body: JSON.stringify(body),
-      credentials: "include"
+      schema: schema
     });
-    
-    return (handleResponse<T>(response, schema));
   },
-  // to do, other methods and upload for images
+  patch: async <S extends z.ZodType>(
+    endpoint: string,
+    body: unknown,
+    schema: S
+  ) => {
+    return api.request(endpoint, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      schema: schema
+    });
+  },
+  delete: async <S extends z.ZodType>(
+    endpoint: string,
+    schema: S
+  ) => {
+    return api.request(endpoint, {
+      method: "POST",
+      schema: schema
+    });
+  },
+  // to do, upload for images
 };

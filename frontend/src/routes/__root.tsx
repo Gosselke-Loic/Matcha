@@ -3,7 +3,7 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router';
 import type { QueryClient } from '@tanstack/react-query';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 import GlobalSpinner from '@/components/spinner/GlobalSpinner'; 
 import { GeneralError } from '@/components/errors/GeneralError'; 

@@ -7,14 +7,14 @@ import {
 import { GeneralError } from "@/components/errors/GeneralError";
 
 export const Route = createFileRoute('/_public')({
-  beforeLoad: async ({ context, location }) => {
+  beforeLoad: async ({ context }) => {
     const { authStore } = context;
     const { isAuthenticated } = authStore.getState();
 
     if ( isAuthenticated ) {
       throw redirect({
-        to: '/login',
-        search: { redirect: location.href }
+        to: '/',
+        replace: true
       });
     }
   },
