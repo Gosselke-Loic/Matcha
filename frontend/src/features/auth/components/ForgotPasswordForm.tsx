@@ -1,25 +1,26 @@
+import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
-import {
-  ForgotPasswordSchema,
-  type ForgotPasswordFormData
-} from "../schemas/auth-schema";
 import { useAuth } from "../hooks/use-auth";
 import { CustomButton } from "@/components/forms/SubmitButton"; 
+import { ForgotPasswordSchema } from "../schemas/auth-schema";
 import { CustomFormInput } from "@/components/forms/CustomFormInput";
+
+type ForgotPasswordType = z.infer<typeof ForgotPasswordSchema>;
 
 export const ForgotPasswordForm = () => {
   const navigate = useNavigate();
   const { forgotPassword } = useAuth();
 
-  const methods = useForm<ForgotPasswordFormData>({
+  const methods = useForm({
     resolver: zodResolver(ForgotPasswordSchema),
+    defaultValues: { email: "" },
     mode: "onTouched"
   });
 
-  const onSubmit = (data: ForgotPasswordFormData) => {
+  const onSubmit = (data: ForgotPasswordType) => {
     forgotPassword.mutate(data.email, {
       onSuccess: () => {
         navigate({
@@ -38,9 +39,11 @@ export const ForgotPasswordForm = () => {
 
         <CustomFormInput name="email" label="Email" type="email" placeholder="Ex: Cowboy554@gmail.com"/>
 
-        <CustomButton type="submit" isPending={forgotPassword.isPending}>
-          Send
-        </CustomButton>
+        <div className="flex items-center justify-center">
+          <CustomButton type="submit" isPending={forgotPassword.isPending}>
+            Send
+          </CustomButton>
+        </div>
 
       </form>
     </FormProvider>
