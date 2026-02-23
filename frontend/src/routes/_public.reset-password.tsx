@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+import { commonWordsOptions } from '@/api/common-queries'; 
 import { ResetPasswordForm } from '@/features/auth/components/ResetPasswordForm';
 
 const resetPasswordSearchSchema = z.object({
@@ -7,15 +10,13 @@ const resetPasswordSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/_public/reset-password')({
-  validateSearch: (search) => resetPasswordSearchSchema.parse(search), 
-  loader: async() => {
-    const { default: words } = await import('../assets/data/common-words.json');
-
-    return ({ commonWords: new Set(words) });
+  validateSearch: (search) => resetPasswordSearchSchema.parse(search),
+  loader: async({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(commonWordsOptions);
   },
   component: () => {
     const { token } = Route.useSearch();
-    const { commonWords } = Route.useLoaderData();
+    const { data : commonWords } = useSuspenseQuery(commonWordsOptions);
     
     return (
       <div className='min-h-screen flex items-center justify-center bg-slate-50'>

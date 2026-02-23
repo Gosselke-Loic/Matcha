@@ -14,10 +14,10 @@ export const Route = createFileRoute('/_authenticated')({
     const { setAuth } = authStore.getState();
 
     try {
-      const res = await queryClient.ensureQueryData(authMeOptions);
-      setAuth(res.data);
+      const data = await queryClient.ensureQueryData(authMeOptions);
+      setAuth(data);
 
-      return (res.data);
+      return (data);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         throw redirect({

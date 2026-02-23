@@ -2,13 +2,10 @@ import { useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import { useForm, FormProvider } from "react-hook-form";
 
-import {
-  createResetPasswordSchema,
-  type ResetPasswordFormData,
-} from "../schemas/auth-schema";
 import { useAuth } from "../hooks/use-auth"; 
 import { useNavigate } from "@tanstack/react-router";
 import { CustomButton } from "@/components/forms/SubmitButton"; 
+import { createResetPasswordSchema, type ResetPasswordFormData } from "../schemas/auth-schema";
 import { CustomFormInput } from "@/components/forms/CustomFormInput"; 
 
 interface ResetPasswordFormProps {
@@ -21,8 +18,13 @@ export const ResetPasswordForm = ({ token, commonWords }: ResetPasswordFormProps
   const { resetPassword } = useAuth();
 
   const schema = useMemo(() => createResetPasswordSchema(commonWords), [commonWords]);
-  const methods = useForm<ResetPasswordFormData>({
+  
+  const methods = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      password: "",
+      confirmPassword: ""
+    },
     mode: "onTouched"
   });
 
@@ -43,9 +45,12 @@ export const ResetPasswordForm = ({ token, commonWords }: ResetPasswordFormProps
         <CustomFormInput name="password" label="Password" type="password" />
         <CustomFormInput name="confirmPassword" label="Confirm password" type="password" />
 
-        <CustomButton type="submit" isPending={resetPassword.isPending}>
-          Send
-        </CustomButton>
+        <div className="flex items-center justify-center">
+          <CustomButton type="submit" isPending={resetPassword.isPending}>
+            Send
+          </CustomButton>
+        </div>
+
       </form>
     </FormProvider>
   );
