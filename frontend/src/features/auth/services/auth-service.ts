@@ -1,40 +1,43 @@
+import { z } from 'zod';
+
 import { api } from "@/api/api"; 
+import { userSchema } from "../schemas/user-schema"; 
 import {
-  type User,
-  UserSchema
-} from "../schemas/user-schema"; 
-import {
-  LoginSchema,
-  type LoginFormData,
-  type RegisterFormData
+  loginSchema,
+  type RegisterFormData,
+  type ResetPasswordFormData
 } from "../schemas/auth-schema";
 
-type ResetPasswordPayload = {
-  token: string,
-  password: string,
-  confirmPassword: string
-};
+type ResetPasswordPayload = ResetPasswordFormData & {token: string };
 
 export const authApi = {
-  login: (credentials: LoginFormData) => {
-    return (api.post<User>("/auth/login", credentials, { schema: UserSchema }));
+  login: (credentials: z.infer<typeof loginSchema>) => {
+    return (api.post("/auth/login", credentials, userSchema ));
   },
   logout: () => {
-    return (api.post("/auth/logout", {}));
+    return (api.post("/auth/logout", {}, z.void()));
   },
   register: (data: RegisterFormData) => {
     const { confirmPassword, ...payload } = data;
-    return (api.post<LoginFormData>(
+    return (api.post(
       "/auth/register",
       payload,
-      { schema: LoginSchema }
+      z.void()
     ));
   },
   forgotPassword: (email: string) => {
-    return (api.post('auth/forgot-password', { email: email }));
+    return (api.post(
+      'auth/forgot-password',
+      { email: email },
+      z.void()
+    ));
   },
   resetPassword: (data: ResetPasswordPayload) => {
     const { confirmPassword, ...payload } = data;
-    return (api.post('auth/reset-password', payload));
+    return (api.post(
+      'auth/reset-password',
+      payload,
+      z.void()
+    ));
   }
 };

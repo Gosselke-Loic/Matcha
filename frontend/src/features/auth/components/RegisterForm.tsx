@@ -15,20 +15,31 @@ interface RegisterFormProps {
   commonWords: Set<string>
 };
 
+// To do, add input form for birthday date
 export const RegisterForm = ({ commonWords }: RegisterFormProps) => {
   const navigate = useNavigate();
   const { register: signup } = useAuth();
 
   const schema = useMemo(() => createRegisterSchema(commonWords), [commonWords]);
-  const methods = useForm<RegisterFormData>({
+  
+  const methods = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {      
+      username: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      birthday: "",
+      password: "",
+      confirmPassword: ""
+    },
     mode: "onTouched"
   });
 
   const onSubmit = (data: RegisterFormData) => {
     signup.mutate(data, {
       onSuccess: () => {
-        navigate({ to: "/login" }); // /verify-mail?
+        navigate({ to: "/login" });
         methods.reset();
       }
     });
@@ -50,9 +61,12 @@ export const RegisterForm = ({ commonWords }: RegisterFormProps) => {
         <CustomFormInput name="password" label="Password" type="password" />
         <CustomFormInput name="confirmPassword" label="Confirm password" type="password" />
 
-        <CustomButton type="submit" isPending={signup.isPending}>
-          Signup
-        </CustomButton>
+        <div className="flex items-center justify-center">
+          <CustomButton type="submit" isPending={signup.isPending}>
+            Signup
+          </CustomButton>
+        </div>
+
       </form>
     </FormProvider>
   );

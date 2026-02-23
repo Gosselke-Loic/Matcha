@@ -1,5 +1,7 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { redirect, createFileRoute } from '@tanstack/react-router';
 
+import { commonWordsOptions } from '@/api/common-queries';
 import { RegisterForm } from '@/features/auth/components/RegisterForm';
 
 export const Route = createFileRoute('/_public/register')({
@@ -11,13 +13,11 @@ export const Route = createFileRoute('/_public/register')({
       throw redirect({ to: '/' });
     };
   },
-  loader: async() => {
-    const { default: words } = await import('../assets/data/common-words.json');
-
-    return ({ commonWords: new Set(words) });
+  loader: async({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(commonWordsOptions);
   },
   component: () => {
-    const { commonWords } = Route.useLoaderData();
+    const { data: commonWords } = useSuspenseQuery(commonWordsOptions);
     
     return (
       <div className='min-h-screen flex items-center justify-center bg-slate-50'>

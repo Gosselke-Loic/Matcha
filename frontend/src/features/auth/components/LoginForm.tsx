@@ -1,18 +1,18 @@
+import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
-import {
-  LoginSchema,
-  type LoginFormData
-} from "../schemas/auth-schema";
 import { useAuth } from "../hooks/use-auth";
+import { LoginSchema } from "../schemas/auth-schema";
 import { CustomButton } from "@/components/forms/SubmitButton"; 
 import { CustomFormInput } from "@/components/forms/CustomFormInput";
 
 interface LoginFormProps {
   redirectTo?: string; 
 };
+
+type LoginFormType = z.infer<typeof LoginSchema>;
 
 // List to do -> Button for forget password send email
 export const LoginForm = ({ redirectTo }: LoginFormProps) => {
@@ -22,10 +22,10 @@ export const LoginForm = ({ redirectTo }: LoginFormProps) => {
   const methods = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: { username: "", password: "" },
-    mode: "onTouched"
+    mode: "onSubmit"
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = (data: LoginFormType) => {
     login.mutate(data, {
       onSuccess: () => {
         navigate({
@@ -45,9 +45,11 @@ export const LoginForm = ({ redirectTo }: LoginFormProps) => {
         <CustomFormInput name="username" label="Username" placeholder="Ex: Cowboy554"/>
         <CustomFormInput name="password" label="Password" type="password" />
 
-        <CustomButton type="submit" isPending={login.isPending}>
-          Connect
-        </CustomButton>
+        <div className="flex items-center justify-center">
+          <CustomButton type="submit" isPending={login.isPending}>
+            Connect
+          </CustomButton>
+        </div>
 
       </form>
     </FormProvider>

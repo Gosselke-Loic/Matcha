@@ -1,8 +1,8 @@
-import { useNavigate } from "@tanstack/react-router";
-import { useMutation , useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from '@tanstack/react-router';
+import { useMutation , useQueryClient } from '@tanstack/react-query';
 
-import { authApi } from "../services/auth-service";
-import { useAuthStore } from "../store/auth-store";
+import { authApi } from '../services/auth-service';
+import { useAuthStore } from '../store/auth-store';
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -26,8 +26,8 @@ export const useAuth = () => {
 
   const loginMutation = useMutation({
     mutationFn: authApi.login,
-    onSuccess: (res) => {
-      setUser(res.data);
+    onSuccess: (data) => {
+      setUser(data);
       //navigate({ to: "/" }); Better navigate on loginForm
     },
     onError: (error) => {
@@ -57,7 +57,10 @@ export const useAuth = () => {
   
   const resetPasswordMutation = useMutation({
     mutationFn: authApi.resetPassword,
-    // To do
+    onSuccess: () => {
+      // toast success
+      navigate({ to: '/login' });
+    }
   });
 
   return {
