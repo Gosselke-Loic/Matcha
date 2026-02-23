@@ -61,6 +61,7 @@ htmlcov/
 # --- Autres ---
 .cache/
 build/
+.pnpm-store/
 
 # --- Doc ---
 suggestions.txt
