@@ -9,7 +9,7 @@ export function CustomButton({ isPending, children, className, ...props }: Submi
     <button
       {...props}
       disabled={isPending || props.disabled}
-      className={`flex items-center justify-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-md
+      className={`px-4 py-2 bg-pink-600 text-white rounded-md
         disabled:bg-pink-200 disabled:cursor-not-allowed transition-all active:scale-95 ${className}`}
     >
       { isPending && (
