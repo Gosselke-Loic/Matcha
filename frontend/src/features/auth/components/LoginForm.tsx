@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
-import { LoginSchema } from "../schemas/auth-schema";
+import { loginSchema } from "../schemas/auth-schema";
 import { CustomButton } from "@/components/forms/SubmitButton"; 
 import { CustomFormInput } from "@/components/forms/CustomFormInput";
 
@@ -12,7 +12,7 @@ interface LoginFormProps {
   redirectTo?: string; 
 };
 
-type LoginFormType = z.infer<typeof LoginSchema>;
+type LoginFormType = z.infer<typeof loginSchema>;
 
 // List to do -> Button for forget password send email
 export const LoginForm = ({ redirectTo }: LoginFormProps) => {
@@ -20,7 +20,7 @@ export const LoginForm = ({ redirectTo }: LoginFormProps) => {
   const navigate = useNavigate();
 
   const methods = useForm({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: { username: "", password: "" },
     mode: "onSubmit"
   });
