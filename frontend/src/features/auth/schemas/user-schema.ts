@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const userSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  username: z.string(),
   email: z.email(),
-  // add more properties
+  // remove email and primary photo
 });
