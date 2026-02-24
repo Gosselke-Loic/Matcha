@@ -5,17 +5,17 @@ import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
 import { CustomButton } from "@/components/forms/SubmitButton"; 
-import { ForgotPasswordSchema } from "../schemas/auth-schema";
+import { forgotPasswordSchema } from "../schemas/auth-schema";
 import { CustomFormInput } from "@/components/forms/CustomFormInput";
 
-type ForgotPasswordType = z.infer<typeof ForgotPasswordSchema>;
+type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
 
 export const ForgotPasswordForm = () => {
   const navigate = useNavigate();
   const { forgotPassword } = useAuth();
 
   const methods = useForm({
-    resolver: zodResolver(ForgotPasswordSchema),
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: "" },
     mode: "onTouched"
   });
