@@ -15,7 +15,7 @@ db = SQLAlchemy()
 class GenderEnum(str, enum.Enum):
     male = "male"
     female = "female"
-    non_binary = "non-binary"
+    non_binary = "non_binary"
 
 class SexPrefEnum(str, enum.Enum):
     straight = "straight"
@@ -42,10 +42,10 @@ class User(db.Model):
     email = db.Column(String(50), unique=True, nullable=False)
     first_name = db.Column(String(50), nullable=False)
     last_name = db.Column(String(50), nullable=False)
-    password = db.Column(Text, nullable=False)  # store hashed password
+    password = db.Column(Text, nullable=False)
     birthday_date = db.Column(Date, nullable=False)
     fame_rate = db.Column(Integer, default=0)
-    gender = db.Column(genders_type, server_default="non-binary", nullable=False)
+    gender = db.Column(genders_type, server_default="non_binary", nullable=False)
     sex_pref = db.Column(sex_prefs_type, server_default="bisexual", nullable=False)
     interests_cache = db.Column(ARRAY(Integer), server_default=text("'{}'::integer[]"), nullable=False)
     biography = db.Column(Text, nullable=True)
@@ -83,7 +83,7 @@ class UserPrefs(db.Model):
 
 # Indexes
 Index("idx_user_prefs_tags", UserPrefs.interested_tags, postgresql_using="gin")
-Index("idx_users_location", User.location, postgresql_using="gist")
+Index("idx_users_location_matcha", User.location, postgresql_using="gist")
 
 
 class Swipe(db.Model):

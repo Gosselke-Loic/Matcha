@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 )
 from .models import db, User, RefreshToken
+from .security import verify_password, hash_password
 
 bp = Blueprint("auth", __name__)
 jwt = JWTManager()
@@ -45,16 +46,53 @@ def get_refresh_expires_delta():
     return delta
 
 
+@bp.route("/signup", methods=["POST"])
+def signup():
+    data = request.get_json() or {}
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+    first_name = data.get("first_name", "First")
+    last_name = data.get("last_name", "Last")
+    birthday = data.get("birthday_date")  #YYYY-MM-DD
+
+    if not username or not email or not password or not birthday:
+        return jsonify(msg="Missing required fields"), 400
+
+    if User.query.filter((User.username == username) | (User.email == email)).first():
+        return jsonify(msg="Username or email already in use"), 409
+
+    #try:
+    #    birthday_date = date.fromisoformat(birthday)
+    #except Exception:
+    #    return jsonify(msg="Invalid birthday_date format, use YYYY-MM-DD"), 400
+
+    hashed = hash_password(password)
+    user = User(
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=hashed,
+        birthday_date=birthday
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify(id=user.id, username=user.username, email=user.email), 201
+
 @bp.route("/login", methods=["POST"])
 def login():
     username = request.json.get("username")
     password = request.json.get("password")
     user = User.query.filter_by(username=username).first()
-    if not user or password != "test":  # replace with real hash check
+    if not user or not verify_password(password, user.password):
         return jsonify(msg="Bad username or password"), 401
 
-    access = create_access_token(identity=user.id)
-    refresh = create_refresh_token(identity=user.id)
+    identity_str = str(user.id)
+    access = create_access_token(identity=identity_str)
+    refresh = create_refresh_token(identity=identity_str)
     refresh_jti = decode_token(refresh)["jti"]
     store_refresh_token(refresh_jti, user.id, current_app.config["JWT_REFRESH_TOKEN_EXPIRES"])
 
@@ -96,6 +134,30 @@ def logout():
 @bp.route("/protected", methods=["GET"])
 @jwt_required()
 def protected():
-    # Access the identity of the current user with get_jwt_identity
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
+
+@jwt.unauthorized_loader
+def custom_missing_token_message(callback):
+    # called when no JWT is present
+    return jsonify({"msg": "Authentication required: no token provided"}), 401
+
+@jwt.invalid_token_loader
+def custom_invalid_token_message(reason):
+    # called when token is malformed/invalid
+    return jsonify({"msg": f"Invalid token: {reason}"}), 422
+
+@jwt.expired_token_loader
+def custom_expired_token_message(jwt_header, jwt_payload):
+    # called when token is expired
+    return jsonify({"msg": "Token expired — please log in again"}), 401
+
+@jwt.revoked_token_loader
+def custom_revoked_token_message(jwt_header, jwt_payload):
+    # called when token was revoked (e.g. logout)
+    return jsonify({"msg": "Token revoked — please log in again"}), 401
+
+@jwt.needs_fresh_token_loader
+def custom_needs_fresh_message(jwt_header, jwt_payload):
+    # called when a fresh token is required
+    return jsonify({"msg": "Fresh token required"}), 401
