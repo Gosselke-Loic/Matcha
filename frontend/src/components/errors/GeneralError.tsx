@@ -10,12 +10,19 @@ export interface GeneralErrorProps extends Omit<Partial<ErrorComponentProps>, 'e
   reset?: () => void;
 };
 
+// To do, wrap general error to center component
 export function GeneralError({ error, reset }: GeneralErrorProps) {
-  if (error instanceof ZodError) return <ZodErrorComponent error={error} reset={reset} />;
-  if (error instanceof ApiError) return <ApiErrorComponent error={error} reset={reset} />;
+
+  const actualError = (error as any)?.cause || error;
+  
+  if (actualError instanceof ZodError) {
+    return <ZodErrorComponent error={actualError} reset={reset} />;
+  };
+  if (actualError instanceof ApiError) {
+    return <ApiErrorComponent error={actualError} reset={reset} />;
+  };
 
   const message = error instanceof Error ? error.message : "Unexpected error occurred";
-
   return (
     <div className="p-4 border border-gray-200 bg-white shadow-sm rounded">
       <h3 className="font-bold text-gray-800">Oups !</h3>
