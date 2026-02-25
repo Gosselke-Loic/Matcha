@@ -10,7 +10,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Required")
 });
 
-export const lorgotPasswordSchema = z.object({
+export const forgotPasswordSchema = z.object({
   email: z.email("Invalid email")
 });
 

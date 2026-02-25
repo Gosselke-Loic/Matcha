@@ -8,8 +8,9 @@ import {
 } from "../schemas/auth-schema";
 import { useAuth } from "../hooks/use-auth"; 
 import { useNavigate } from "@tanstack/react-router";
-import { CustomButton } from "@/components/forms/SubmitButton"; 
-import { CustomFormInput } from "@/components/forms/CustomFormInput"; 
+import CustomButton from "@/components/forms/SubmitButton"; 
+import CustomFormInput from "@/components/forms/CustomFormInput"; 
+import BirthdayFormInput from "@/components/forms/BirthdayFormInput"; 
 
 interface RegisterFormProps {
   commonWords: Set<string>
@@ -52,7 +53,8 @@ export const RegisterForm = ({ commonWords }: RegisterFormProps) => {
 
         <CustomFormInput name="username" label="Username" placeholder="Ex: Cowboy554"/>
         <CustomFormInput name="email" label="Email" type="email" placeholder="cowboy554@gmail.com" />
-
+        <BirthdayFormInput />
+        
         <div className="grid grid-cols-2 gap-4">
           <CustomFormInput name="firstName" label="First name" />
           <CustomFormInput name="lastName" label="Last name" />

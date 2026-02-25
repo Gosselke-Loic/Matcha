@@ -2,11 +2,14 @@ import { useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import { useForm, FormProvider } from "react-hook-form";
 
+import {
+  createResetPasswordSchema,
+  type ResetPasswordFormData
+} from "../schemas/auth-schema";
 import { useAuth } from "../hooks/use-auth"; 
 import { useNavigate } from "@tanstack/react-router";
-import { CustomButton } from "@/components/forms/SubmitButton"; 
-import { createResetPasswordSchema, type ResetPasswordFormData } from "../schemas/auth-schema";
-import { CustomFormInput } from "@/components/forms/CustomFormInput"; 
+import CustomButton from "@/components/forms/SubmitButton"; 
+import CustomFormInput from "@/components/forms/CustomFormInput"; 
 
 interface ResetPasswordFormProps {
   token: string;

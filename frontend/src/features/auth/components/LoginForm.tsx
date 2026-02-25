@@ -5,8 +5,8 @@ import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
 import { loginSchema } from "../schemas/auth-schema";
-import { CustomButton } from "@/components/forms/SubmitButton"; 
-import { CustomFormInput } from "@/components/forms/CustomFormInput";
+import CustomButton from "@/components/forms/SubmitButton"; 
+import CustomFormInput from "@/components/forms/CustomFormInput";
 
 interface LoginFormProps {
   redirectTo?: string; 
