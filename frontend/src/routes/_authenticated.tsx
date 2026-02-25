@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-router";
 
 import ApiError from "@/api/ApiError"; 
+import PageTransition from "@/components/transition/PageTransition";
 import { GeneralError } from "@/components/errors/GeneralError"; 
 import { authMeOptions } from "@/features/auth/services/auth-options"; 
 
@@ -37,9 +38,9 @@ export const Route = createFileRoute('/_authenticated')({
       <nav>
         
       </nav>
-      <main className="animate-in fade-in duration-300">
+      <PageTransition>
         <Outlet />
-      </main>
+      </PageTransition>
     </>
   )
 });

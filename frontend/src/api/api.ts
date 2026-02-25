@@ -111,7 +111,7 @@ export const api = {
     schema: S
   ) => {
     return api.request(endpoint, {
-      method: "POST",
+      method: "DELETE",
       schema: schema
     });
   },

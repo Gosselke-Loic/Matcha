@@ -4,7 +4,9 @@ import {
   createFileRoute,
 } from "@tanstack/react-router";
 
+import PublicSpinner from "@/components/spinner/PublicSpinner";
 import { GeneralError } from "@/components/errors/GeneralError";
+import PageTransition from "@/components/transition/PageTransition"; 
 
 export const Route = createFileRoute('/_public')({
   beforeLoad: async ({ context }) => {
@@ -21,9 +23,11 @@ export const Route = createFileRoute('/_public')({
   errorComponent: GeneralError,
   component: () => (
     <>
-      <main className="animate-in fade-in duration-300">
+      <PageTransition>
         <Outlet />
-      </main>
+      </PageTransition>
     </>
-  )
+  ),
+  pendingComponent: PublicSpinner,
+  pendingMs: 500
 });
