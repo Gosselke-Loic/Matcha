@@ -50,12 +50,12 @@ function ProfileComponent() {
   const { data: commonWords } = useQuery({ ...commonWordsOptions, enabled: isOwner });
 
   return (
-    <>
+    <div className='min-h-screen flex items-center justify-center bg-slate-50'>
       {('email' in profile) ? (
         <ProfileForm data={profile} commonWords={commonWords} />
       ) : (
         <Profile data={profile} />
       )}
-    </>
+    </div>
   )
 };

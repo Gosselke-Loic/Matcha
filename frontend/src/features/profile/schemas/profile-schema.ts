@@ -7,7 +7,6 @@ import {
 } from '@/schemas/common';
 
 const profileBaseSchema = z.object({
-  id: z.string(),
   username: FORM_RULES.username,
   firstName: FORM_RULES.username,
   lastName: FORM_RULES.username,
@@ -31,7 +30,7 @@ export const ownProfileSchema = profileBaseSchema.extend({
 });
 export const updateOwnProfileSchema = ownProfileSchema.partial();
 
-export const profilePasswordFormSchema = (commonWords: Set<string>) =>
+export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>
   z.object({
     oldPassword: z.string().min(1, "Required"),
     ...getPasswordFields(commonWords)
@@ -39,5 +38,5 @@ export const profilePasswordFormSchema = (commonWords: Set<string>) =>
     message: "The passwords do not match",
     path: ['confirmPassword']
   });
-type ProfilePasswordFormValues = ReturnType<typeof profilePasswordFormSchema>;
+type ProfilePasswordFormValues = ReturnType<typeof createProfilePasswordFormSchema>;
 export type profilePasswordFormData = z.infer<ProfilePasswordFormValues>;
