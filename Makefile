@@ -1,4 +1,3 @@
-# Provisoire, a changer.
 NAME		=	matcha
 
 RED 		=	\033[1;91m
@@ -10,11 +9,10 @@ all:	$(NAME)
 
 $(NAME):
 	@echo "$(GREEN) Starting production in detach $(DEF_COLOR)"
-	@docker compose --profile prod up -d --build
+	@docker compose -f docker-compose-prod.yml up -d --build
 	@echo "$(GREEN) Ready! $(DEF_COLOR)"
 
 dev:
-	@docker compose --profile dev up
+	@docker compose -f docker-compose-dev.yml up
 
-.PHONY:			all dev
-
+.PHONY:	all dev
