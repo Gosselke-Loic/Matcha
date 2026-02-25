@@ -1,4 +1,3 @@
-import type React from "react";
 import { useFormContext } from "react-hook-form";
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -7,7 +6,7 @@ interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 };
 
 // Maybe need a spinner for email validating from backend
-export function CustomFormInput (
+export default function CustomFormInput (
   { name, label, type = "text", ...props }: FormInputProps
 ) {
   const {
@@ -32,7 +31,7 @@ export function CustomFormInput (
           ${error ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
         `}
       />
-      
+    
       {error && (
         <span className="text-xs text-red-500">
           { error.message?.toString() }

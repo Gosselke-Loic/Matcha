@@ -4,7 +4,9 @@ type SubmitButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   isPending?: boolean;
 }
 
-export function CustomButton({ isPending, children, className, ...props }: SubmitButtonProps) {
+export default function CustomButton(
+  { isPending, children, className, ...props }: SubmitButtonProps
+) {
   return (
     <button
       {...props}
