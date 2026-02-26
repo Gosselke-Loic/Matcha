@@ -119,7 +119,7 @@ def request_password_reset():
     if user:
         token = generate_token(str(user.id))
         reset_url = url_for("auth.password_reset_confirm", token=token, _external=True)
-        send_reset_email(user.email, "Password reset", f"Click to reset: {reset_url}")
+        send_reset_email(user.email, reset_url)
         db.session.commit()
     return jsonify(msg="If that email exists, a reset link has been sent"), 200
 
