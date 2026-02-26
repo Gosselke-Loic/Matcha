@@ -7,8 +7,8 @@ import {
   updateOwnProfileSchema,
 } from "../schemas/profile-schema";
 import { useProfile } from "../hooks/use-profile";
-import CustomButton from "@/components/forms/SubmitButton";
-import CustomFormInput from "@/components/forms/CustomFormInput";
+import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 interface ProfileFormProps {
   data: z.infer<typeof ownProfileSchema>;
@@ -26,7 +26,7 @@ export default function ProfileForm ({ data }: ProfileFormProps) {
       lastName: data.lastName,
       biography: data.biography || "",
       gender: data.gender,
-      interests: data.interests || [], // check il data.interests are empty?
+      interests: data.interests || [], // check if data.interests are empty?
       sex_pref: data.sex_pref
       // add location
     },

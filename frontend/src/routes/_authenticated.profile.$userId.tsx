@@ -4,7 +4,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 
 import { commonWordsOptions } from '@/api/common-queries';
 import { Profile } from '@/features/profile/components/Profile';
-import { ProfileForm } from '@/features/profile/components/ProfileForm';
+import { ProfileBaseForm } from '@/features/profile/components/ProfileBaseForm';
 import { profileQueryOptions } from '@/features/profile/services/profile-options';
 
 const ProfileParamsSchema = z.preprocess(
@@ -52,7 +52,7 @@ function ProfileComponent() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-50'>
       {('email' in profile) ? (
-        <ProfileForm data={profile} commonWords={commonWords} />
+        <ProfileBaseForm data={profile} commonWords={commonWords} />
       ) : (
         <Profile data={profile} />
       )}

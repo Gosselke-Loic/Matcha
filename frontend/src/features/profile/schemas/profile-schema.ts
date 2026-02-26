@@ -4,8 +4,9 @@ import {
   FORM_RULES,
   isoDateTime,
   getPasswordFields
-} from '@/schemas/common';
+} from '@shared/schemas/common';
 
+// make interests tag schema in shared
 const profileBaseSchema = z.object({
   username: FORM_RULES.username,
   firstName: FORM_RULES.username,
@@ -13,8 +14,10 @@ const profileBaseSchema = z.object({
   biography: z.string().max(500).nullable(),
   birthdayDate: isoDateTime,
   fameRate: z.int().positive(),
-  interests: z.array(z.string()),
-  gender: z.enum(['male', 'female', 'non-binary']),
+  interests: z.array(z.string())
+    .min(3, "Minimum of 3 tags required")
+    .max(10, "Maximum of 10 tags allowed"),
+  gender: z.enum(['male', 'female', 'non-binary'], "Please select a valid gender")
   // photos: z.array(z.url())
 });
 

@@ -7,8 +7,8 @@ import {
   createProfilePasswordFormSchema
 } from "../schemas/profile-schema";
 import { useProfile } from "../hooks/use-profile";
-import CustomButton from "@/components/forms/SubmitButton";
-import CustomFormInput from "@/components/forms/CustomFormInput";
+import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 interface ProfilePasswordFormProps {
   commonWords: Set<string>;
