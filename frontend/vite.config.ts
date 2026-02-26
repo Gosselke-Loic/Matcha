@@ -23,11 +23,10 @@ export default defineConfig({
 		alias: {
 		  '@': path.resolve(__dirname, './src'),
 		  '@api': path.resolve(__dirname, './src/api'),
-		  '@hooks': path.resolve(__dirname, './src/hooks'),
 		  '@assets': path.resolve(__dirname, './src/assets'),
 		  '@routes': path.resolve(__dirname, './src/routes'),
+		  '@shared': path.resolve(__dirname, './src/shared'),
 			'@features': path.resolve(__dirname, './src/features'),
-		  '@components': path.resolve(__dirname, './src/components')
 		}
   }
 })

@@ -28,11 +28,10 @@
     "paths": {
       "@/*": ["src/*"],
       "@api/*": ["src/api/*"],
-      "@hooks/*": ["src/hooks/*"],
       "@assets/*": ["src/assets/*"],
       "@routes/*": ["src/routes/*"],
-      "@features/*": ["src/features/*"],
-      "@components/*": ["src/components/*"],
+      "@shared/*": ["src/shared/*"],
+      "@features/*": ["src/features/*"]
     }
   },
   "include": ["src", "routeTree.gen.ts"]
