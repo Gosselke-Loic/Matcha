@@ -1,12 +1,15 @@
 from datetime import datetime, timedelta, timezone
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, url_for
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
     decode_token, jwt_required, get_jwt, get_jwt_identity,
     set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 )
+
 from .models import db, User, RefreshToken
 from .security import verify_password, hash_password
+from .email import generate_confirmation_token, send_confirmation_email, confirm_token
+
 
 bp = Blueprint("auth", __name__)
 jwt = JWTManager()
@@ -77,13 +80,34 @@ def signup():
         first_name=first_name,
         last_name=last_name,
         password=hashed,
-        birthday_date=birthday
+        birthday_date=birthday,
+        is_active=current_app.config["MAIL_SUPPRESS_SEND"]
     )
 
     db.session.add(user)
     db.session.commit()
 
-    return jsonify(id=user.id, username=user.username, email=user.email), 201
+    token = generate_confirmation_token(user.email)
+    confirm_url = url_for("auth.confirm_email", token=token, _external=True)
+    send_confirmation_email(user.email, confirm_url, user.first_name)
+
+    return jsonify(msg="User created. Please check your email to confirm."), 201
+
+
+@bp.route("/confirm/<token>", methods=["GET"])
+def confirm_email(token):
+    email = confirm_token(token)
+    if not email:
+        return jsonify(msg="Invalid or expired token"), 400
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify(msg="User not found"), 404
+    if user.is_active:
+        return jsonify(msg="Account already confirmed"), 200
+    user.is_active = True
+    user.email_confirmed_at = datetime.now(timezone.utc)
+    db.session.commit()
+    return jsonify(msg="Email confirmed, account activated"), 200
 
 
 @bp.route("/login", methods=["POST"])
@@ -93,6 +117,8 @@ def login():
     user = User.query.filter_by(username=username).first()
     if not user or not verify_password(password, user.password):
         return jsonify(msg="Bad username or password"), 401
+    if not user.is_active:
+        return jsonify(msg="Email not confirmed"), 403
 
     identity_str = str(user.id)
     access = create_access_token(identity=identity_str)
@@ -100,7 +126,7 @@ def login():
     refresh_jti = decode_token(refresh)["jti"]
     store_refresh_token(refresh_jti, user.id, current_app.config["JWT_REFRESH_TOKEN_EXPIRES"])
 
-    resp = jsonify(msg="Login successful")
+    resp = jsonify(id=user.id, username=user.username)
     set_access_cookies(resp, access)
     set_refresh_cookies(resp, refresh)
     return resp

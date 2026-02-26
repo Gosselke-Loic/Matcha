@@ -51,6 +51,8 @@ class User(db.Model):
     biography = db.Column(Text, nullable=True)
     location = db.Column(Geometry(geometry_type="POINT", srid=4326), nullable=True)
     created_at = db.Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
+    is_active = db.Column(Boolean, default=False, nullable=False)
+    email_confirmed_at = db.Column(TIMESTAMP(timezone=True), nullable=True)
 
     photos = db.relationship("UserPhoto", back_populates="user", cascade="all, delete-orphan")
     prefs = db.relationship("UserPrefs", uselist=False, back_populates="user", cascade="all, delete-orphan")
