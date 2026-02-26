@@ -8,7 +8,7 @@ from flask_jwt_extended import (
 
 from .models import db, User, RefreshToken
 from .security import verify_password, hash_password
-from .email import generate_confirmation_token, send_confirmation_email, confirm_token
+from .email import generate_token, send_confirmation_email, confirm_token, send_reset_email
 
 
 bp = Blueprint("auth", __name__)
@@ -46,7 +46,6 @@ def is_refresh_token_revoked(jti: str) -> bool:
 # Helper to get refresh token expiry delta used by flask-jwt-extended config
 def get_refresh_expires_delta():
     delta = current_app.config.get("JWT_REFRESH_TOKEN_EXPIRES")
-    # Flask-JWT-Extended may store timedelta or int seconds; normalize to timedelta
     if isinstance(delta, int):
         return timedelta(seconds=delta)
     return delta
@@ -87,7 +86,7 @@ def signup():
     db.session.add(user)
     db.session.commit()
 
-    token = generate_confirmation_token(user.email)
+    token = generate_token(user.email)
     confirm_url = url_for("auth.confirm_email", token=token, _external=True)
     send_confirmation_email(user.email, confirm_url, user.first_name)
 
@@ -110,10 +109,49 @@ def confirm_email(token):
     return jsonify(msg="Email confirmed, account activated"), 200
 
 
+@bp.route("/password-reset/request", methods=["POST"])
+def request_password_reset():
+    data = request.get_json() or {}
+    email = (data.get("email") or "").strip().lower()
+    if not email:
+        return jsonify(msg="If that email exists, a reset link has been sent"), 200
+    user = User.query.filter_by(email=email).first()
+    if user:
+        token = generate_token(str(user.id))
+        reset_url = url_for("auth.password_reset_confirm", token=token, _external=True)
+        send_reset_email(user.email, "Password reset", f"Click to reset: {reset_url}")
+        db.session.commit()
+    return jsonify(msg="If that email exists, a reset link has been sent"), 200
+
+
+@bp.route("/password-reset/confirm", methods=["POST"])
+def password_reset_confirm():
+    data = request.get_json() or {}
+    token = data.get("token")
+    new_password = data.get("new_password")
+    if not token or not new_password:
+        return jsonify(msg="Invalid request"), 400
+    user_id = confirm_token(token, max_age=3600)
+    if not user_id:
+        return jsonify(msg="Invalid or expired token"), 400
+    user = User.query.get(int(user_id))
+    if not user:
+        return jsonify(msg="Invalid token"), 400
+    user.password = hash_password(new_password)
+    db.session.add(user)
+    db.session.commit()
+    RefreshToken.query.filter_by(user_id=user.id).update({"revoked": True})
+    db.session.commit()
+    return jsonify(msg="Password has been reset"), 200
+
+
 @bp.route("/login", methods=["POST"])
 def login():
-    username = request.json.get("username")
-    password = request.json.get("password")
+    data = request.get_json() or {}
+    username = data.get("username")
+    password = data.get("password")
+    if not username or not password:
+        return jsonify(msg="Invalid request"), 400
     user = User.query.filter_by(username=username).first()
     if not user or not verify_password(password, user.password):
         return jsonify(msg="Bad username or password"), 401
@@ -169,6 +207,18 @@ def logout():
 def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
+
+
+@bp.route("/me", methods=["GET"])
+@jwt_required()
+def get_user_info():
+    current = get_jwt_identity()
+
+    user = User.query.get(current)
+    if not user:
+        return jsonify(msg="User not found"), 404
+    
+    return jsonify(id=user.id, username=user.username)
 
 
 @jwt.unauthorized_loader

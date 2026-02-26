@@ -30,8 +30,8 @@ def private_user_payload(user: User):
 
 
 @bp.route("/<int:user_id>", methods=["GET"])
+@jwt_required()
 def get_profile(user_id: int):
-    verify_jwt_in_request()
     current = get_jwt_identity()
 
     user = User.query.get(user_id)
@@ -45,8 +45,8 @@ def get_profile(user_id: int):
 
 
 @bp.route("/me", methods=["GET"])
+@jwt_required()
 def get_my_profile():
-    verify_jwt_in_request()
     current = get_jwt_identity()
 
     user = User.query.get(current)
