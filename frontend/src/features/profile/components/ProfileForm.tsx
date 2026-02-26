@@ -3,15 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";  
 
 import {
-  ownProfileSchema,
-  updateOwnProfileSchema,
+  type OwnProfileData,
+  updateOwnProfileSchema
 } from "../schemas/profile-schema";
 import { useProfile } from "../hooks/use-profile";
 import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 interface ProfileFormProps {
-  data: z.infer<typeof ownProfileSchema>;
+  data: OwnProfileData;
 };
 
 export default function ProfileForm ({ data }: ProfileFormProps) {

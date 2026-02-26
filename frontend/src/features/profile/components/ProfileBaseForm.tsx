@@ -1,11 +1,9 @@
-import { z } from "zod";
-
 import ProfileForm from "./ProfileForm";
 import { ProfilePasswordForm } from "./ProfilePasswordForm";  
-import { ownProfileSchema } from "../schemas/profile-schema";
+import type { OwnProfileData } from "../schemas/profile-schema";
 
 interface ProfileBaseFormProps {
-  data: z.infer<typeof ownProfileSchema>;
+  data: OwnProfileData;
   commonWords: Set<string> | undefined;
 };
 

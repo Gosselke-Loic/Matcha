@@ -3,16 +3,18 @@ import { z } from 'zod';
 import {
   FORM_RULES,
   getPasswordFields
-} from '@/schemas/common';
+} from '@shared/schemas/common';
 
 export const loginSchema = z.object({
   username: FORM_RULES.username,
   password: z.string().min(1, "Required")
 });
+export type LoginData = z.infer<typeof loginSchema>;
 
 export const forgotPasswordSchema = z.object({
   email: z.email("Invalid email")
 });
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>; 
 
 export const createRegisterSchema = (commonWords: Set<string>) =>
   z.object({

@@ -1,14 +1,11 @@
-import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
-import { forgotPasswordSchema } from "../schemas/auth-schema";
 import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
-
-type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
+import { forgotPasswordSchema, type ForgotPasswordData } from "../schemas/auth-schema";
 
 export const ForgotPasswordForm = () => {
   const navigate = useNavigate();
@@ -20,7 +17,7 @@ export const ForgotPasswordForm = () => {
     mode: "onTouched"
   });
 
-  const onSubmit = (data: ForgotPasswordType) => {
+  const onSubmit = (data: ForgotPasswordData) => {
     forgotPassword.mutate(data.email, {
       onSuccess: () => {
         navigate({

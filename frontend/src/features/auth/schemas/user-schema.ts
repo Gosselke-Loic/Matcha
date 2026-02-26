@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const userSchema = z.object({
   id: z.string(),
   username: z.string(),
-  email: z.email(),
-  // remove email and primary photo
+  is_complete: z.boolean(),
+  // To do primary photo
 });
+export type userData = z.infer<typeof userSchema>;

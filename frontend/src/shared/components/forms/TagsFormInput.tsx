@@ -1,8 +1,12 @@
 import { useFormContext, Controller } from "react-hook-form";
 
-import type { Tags } from "@/features/profile/types/tag-profile"; 
+import type { Tags } from "@/shared/schemas/tag-schema"; 
 
-export const TagsFormManager = ({ tags }: Tags) => {
+interface TagsFormManagerProps {
+  tags: Tags;
+};
+
+export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
   const { control, setValue } = useFormContext();
 
   return (

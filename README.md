@@ -22,5 +22,8 @@ Matcha is a high-performance web app featuring real-time interactions, geolocate
 - **Profile Management:** Secure auth, email verification, and multi-photo upload.
 - **Geolocation:** Automatic user localization with manual override.
 
+> [!CAUTION]
+> Documentation coming soon!
+
 > [!WARNING]
 > Disclaimer: This is a student project developed for learning purposes. While it may not strictly adhere to all industry-standard production practices yet, we have put our best efforts into delivering clean code and architecture that aims to follow professional guidelines as closely as possible.

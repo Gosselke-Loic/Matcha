@@ -1,18 +1,15 @@
-import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
-import { loginSchema } from "../schemas/auth-schema";
 import CustomButton from "@/shared/components/forms/SubmitButton"; 
+import { loginSchema, type LoginData } from "../schemas/auth-schema";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 interface LoginFormProps {
   redirectTo?: string; 
 };
-
-type LoginFormType = z.infer<typeof loginSchema>;
 
 // List to do -> Button for forget password send email
 export const LoginForm = ({ redirectTo }: LoginFormProps) => {
@@ -25,7 +22,7 @@ export const LoginForm = ({ redirectTo }: LoginFormProps) => {
     mode: "onSubmit"
   });
 
-  const onSubmit = (data: LoginFormType) => {
+  const onSubmit = (data: LoginData) => {
     login.mutate(data, {
       onSuccess: () => {
         navigate({
