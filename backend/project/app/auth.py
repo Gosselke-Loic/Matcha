@@ -19,6 +19,7 @@ def store_refresh_token(jti: str, user_id: int, expires_delta: timedelta):
     db.session.commit()
     return rt
 
+
 def revoke_refresh_token(jti: str):
     rt = RefreshToken.query.filter_by(jti=jti).one_or_none()
     if rt and not rt.revoked:
@@ -26,6 +27,7 @@ def revoke_refresh_token(jti: str):
         db.session.add(rt)
         db.session.commit()
     return rt
+
 
 def is_refresh_token_revoked(jti: str) -> bool:
     rt = RefreshToken.query.filter_by(jti=jti).one_or_none()
@@ -36,6 +38,7 @@ def is_refresh_token_revoked(jti: str) -> bool:
     if rt.expires_at < datetime.now(timezone.utc):
         return True
     return False
+
 
 # Helper to get refresh token expiry delta used by flask-jwt-extended config
 def get_refresh_expires_delta():
@@ -82,6 +85,7 @@ def signup():
 
     return jsonify(id=user.id, username=user.username, email=user.email), 201
 
+
 @bp.route("/login", methods=["POST"])
 def login():
     username = request.json.get("username")
@@ -100,6 +104,7 @@ def login():
     set_access_cookies(resp, access)
     set_refresh_cookies(resp, refresh)
     return resp
+
 
 @bp.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -122,6 +127,7 @@ def refresh():
     set_refresh_cookies(resp, new_refresh)
     return resp
 
+
 @bp.route("/logout", methods=["POST"])
 @jwt_required(refresh=True)
 def logout():
@@ -131,31 +137,37 @@ def logout():
     unset_jwt_cookies(resp)
     return resp
 
+
 @bp.route("/protected", methods=["GET"])
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
 
+
 @jwt.unauthorized_loader
 def custom_missing_token_message(callback):
     # called when no JWT is present
     return jsonify({"msg": "Authentication required: no token provided"}), 401
+
 
 @jwt.invalid_token_loader
 def custom_invalid_token_message(reason):
     # called when token is malformed/invalid
     return jsonify({"msg": f"Invalid token: {reason}"}), 422
 
+
 @jwt.expired_token_loader
 def custom_expired_token_message(jwt_header, jwt_payload):
     # called when token is expired
     return jsonify({"msg": "Token expired — please log in again"}), 401
 
+
 @jwt.revoked_token_loader
 def custom_revoked_token_message(jwt_header, jwt_payload):
     # called when token was revoked (e.g. logout)
     return jsonify({"msg": "Token revoked — please log in again"}), 401
+
 
 @jwt.needs_fresh_token_loader
 def custom_needs_fresh_message(jwt_header, jwt_payload):
