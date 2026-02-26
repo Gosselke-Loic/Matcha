@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
-import CustomButton from "@/components/forms/SubmitButton"; 
 import { forgotPasswordSchema } from "../schemas/auth-schema";
-import CustomFormInput from "@/components/forms/CustomFormInput";
+import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
 

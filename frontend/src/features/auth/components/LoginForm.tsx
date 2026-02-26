@@ -5,8 +5,8 @@ import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
 import { loginSchema } from "../schemas/auth-schema";
-import CustomButton from "@/components/forms/SubmitButton"; 
-import CustomFormInput from "@/components/forms/CustomFormInput";
+import CustomButton from "@/shared/components/forms/SubmitButton"; 
+import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 interface LoginFormProps {
   redirectTo?: string; 
@@ -29,7 +29,7 @@ export const LoginForm = ({ redirectTo }: LoginFormProps) => {
     login.mutate(data, {
       onSuccess: () => {
         navigate({
-          to: redirectTo || '/_authenticated/',
+          to: redirectTo || '/',
           replace: true
         });
         methods.reset();

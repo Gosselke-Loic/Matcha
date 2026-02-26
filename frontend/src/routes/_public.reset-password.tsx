@@ -11,6 +11,11 @@ const resetPasswordSearchSchema = z.object({
 
 export const Route = createFileRoute('/_public/reset-password')({
   validateSearch: (search) => resetPasswordSearchSchema.parse(search),
+  beforeLoad: ({ search }) => {
+    if (!search.token) {
+      // To do, throw or redirect 
+    };
+  },
   loader: async({ context: { queryClient } }) => {
     await queryClient.ensureQueryData(commonWordsOptions);
   },

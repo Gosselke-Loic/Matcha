@@ -6,17 +6,16 @@ import {
   createRegisterSchema,
   type RegisterFormData
 } from "../schemas/auth-schema";
-import { useAuth } from "../hooks/use-auth"; 
+import { useAuth } from "../hooks/use-auth";
+import BirthdayFormInput from "./BirthdayFormInput";
 import { useNavigate } from "@tanstack/react-router";
-import CustomButton from "@/components/forms/SubmitButton"; 
-import CustomFormInput from "@/components/forms/CustomFormInput"; 
-import BirthdayFormInput from "@/components/forms/BirthdayFormInput"; 
+import CustomButton from "@/shared/components/forms/SubmitButton"; 
+import CustomFormInput from "@/shared/components/forms/CustomFormInput"; 
 
 interface RegisterFormProps {
   commonWords: Set<string>
 };
 
-// To do, add input form for birthday date
 export const RegisterForm = ({ commonWords }: RegisterFormProps) => {
   const navigate = useNavigate();
   const { register: signup } = useAuth();
