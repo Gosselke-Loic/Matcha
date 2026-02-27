@@ -4,10 +4,10 @@ import {
   createFileRoute,
 } from "@tanstack/react-router";
 
-import ApiError from "@/api/ApiError"; 
-import PageTransition from "@/components/transition/PageTransition";
-import { GeneralError } from "@/components/errors/GeneralError"; 
-import { authMeOptions } from "@/features/auth/services/auth-options"; 
+import ApiError from "@/api/ApiError";
+import { GeneralError } from "@shared/components/errors/GeneralError";
+import { authMeOptions } from "@/features/auth/services/auth-options";
+import PageTransition from "@shared/components/transition/PageTransition";
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
