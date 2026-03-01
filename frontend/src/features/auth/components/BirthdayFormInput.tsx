@@ -1,6 +1,5 @@
-import { useFormContext } from "react-hook-form"; 
+import { useFormContext } from "react-hook-form";
 
-// Check is error handle is needed for data input
 export default function BirthdayFormInput(
   { props }:{ props?: React.InputHTMLAttributes<HTMLInputElement>}
 ) {
@@ -10,7 +9,6 @@ export default function BirthdayFormInput(
   } = useFormContext();
 
   const error = errors["birthday"];
-
   return (
     <div className="flex flex-col gap-1.5 mb-4">
       <label htmlFor="birthday" className="text-sm font-medium text-slate-700">
@@ -23,13 +21,13 @@ export default function BirthdayFormInput(
         id="birthday"
         type="date"
         className={`px-3 py-2 border rounded-md outline-none transition-colors
-          ${error ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
+          ${error?.message ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
         `}
       />
-    
-      {error && (
-        <span className="text-xs text-red-500">
-          { error.message?.toString() }
+
+      {error?.message && (
+        <span className="text-xs text-red-500 font-medium">
+          { error.message.toString() }
         </span>
       )}
     </div>
