@@ -31,4 +31,4 @@ Matcha is a high-performance web app featuring real-time interactions, geolocate
 > Documentation coming soon!
 
 > [!CAUTION]
-> Disclaimer: This is a student project developed for learning purposes. While it may not strictly adhere to all industry-standard production practices yet, we have put our best efforts into delivering clean code and architecture that aims to follow professional guidelines as closely as possible.
+> Disclaimer: This is a student project developed for learning purposes. As we are exploring new technologies for the first time, some implementations may not strictly adhere to all industry-standard practices yet. However, we are committed to delivering clean code and an architecture that follows professional guidelines as closely as possible throughout our learning journey.
