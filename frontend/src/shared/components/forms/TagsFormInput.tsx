@@ -6,16 +6,23 @@ interface TagsFormManagerProps {
   tags: Tags;
 };
 
+// Add emoti label if isActive or not
 export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
   const { control, setValue } = useFormContext();
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-3">
+      <label htmlFor="interests" className="text-sm font-medium text-slate-700">
+        Interests
+      </label>
+
       <Controller
-        control={control}
         name="interests"
+        control={control}
         render={({ field: { value: selectedIds }, fieldState: { error } }) => {
+
           const toggleTag = (id: string) => {
+            
             const newValues = selectedIds.includes(id)
               ? selectedIds.filter((i: string) => i !== id)
               : [...selectedIds, id];
@@ -28,6 +35,7 @@ export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => {
                   const isActive = selectedIds.includes(tag.id);
+
                   return (
                     <button
                       key={tag.id}
@@ -37,15 +45,15 @@ export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
                         ${ isActive ? "bg-pink-500 text-white" : "bg-gray-100" }
                       `}
                     >
-                      { tag.label }
+                      { isActive ? `${tag.label}`: tag.label }
                     </button>
                   );
                 })}
               </div>
-
-              {error && (
-                <span className="text-xs text-red-500">
-                  { error.message?.toString() }
+      
+              {error?.message && (
+                <span className="text-xs text-red-500 font-medium">
+                  { error.message.toString() }
                 </span>
               )}
             </> 

@@ -32,9 +32,9 @@ export default function CustomFormInput (
         `}
       />
     
-      {error && (
-        <span className="text-xs text-red-500">
-          { error.message?.toString() }
+      {error?.message && (
+        <span className="text-xs text-red-500 font-medium">
+          { error.message.toString() }
         </span>
       )}
     </div>

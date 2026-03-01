@@ -12,7 +12,7 @@ const profileBaseSchema = z.object({
   username: FORM_RULES.username,
   firstName: FORM_RULES.username,
   lastName: FORM_RULES.username,
-  biography: z.string().max(500).nullable(),
+  biography: z.string().max(300),
   birthdayDate: isoDateTime,
   fameRate: z.int().positive(),
   interests: tagsSchema,
@@ -28,9 +28,14 @@ export type ProfileData = z.infer<typeof profileSchema>;
 
 export const ownProfileSchema = profileBaseSchema.extend({
   email: z.email(),
-  interests: z.array(z.string())
+  biography: z.string()
+  .trim()
+  .min(1, "Biography is required")
+  .min(10, "Tell a little more about yourself")
+  .max(500, "500 characters maximum"),
+  interests: tagsSchema
     .min(3, "Minimum of 3 tags required")
-    .max(10, "Maximum of 10 tags allowed"),
+    .max(6, "Maximum of 6 tags allowed"),
   // location: To do
   sex_pref:z.enum(['heterosexual', 'gay', 'lesbian', 'bisexual']), 
 });

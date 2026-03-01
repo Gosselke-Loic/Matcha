@@ -9,6 +9,8 @@ import {
 import { useProfile } from "../hooks/use-profile";
 import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
+import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
+import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
 
 interface ProfileFormProps {
   data: OwnProfileData;
@@ -51,9 +53,14 @@ export default function ProfileForm ({ data }: ProfileFormProps) {
           <CustomFormInput name="lastName" label="Last name" />
         </div>
 
-        { /* Make custom input for text area */ }
+        <CustomTextareaInput
+          label="Biography"
+          name="biography"
+          maxLengthNumber={500}
+          maxLength={500}
+        />
         { /* custom select (gender) */ }
-        { /* Make custom input can acccepts tags array */ }
+        <TagsFormManager tags={data.interests} />
         { /* custom select (sex_prefs) */ }
         { /* custom input with debounce for location, call api nominatim */ }
         
