@@ -20,11 +20,11 @@ class Config(object):
     
     # Mail settings
     MAIL_SECRET_KEY = os.getenv("MAIL_SECRET_KEY", "super-secret")
-    MAIL_SERVER = "smtp.example.com"
+    MAIL_SERVER = "smtp.gmail.com"
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
     MAIL_USERNAME = "smtp-user"
     MAIL_PASSWORD = "smtp-pass"
-    MAIL_DEFAULT_SENDER = ("YourApp", "no-reply@example.com")
+    MAIL_DEFAULT_SENDER = "Matcha <no-reply@matcha.com>"
     MAIL_SUPPRESS_SEND = True
