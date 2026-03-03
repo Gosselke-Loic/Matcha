@@ -36,10 +36,15 @@ export const ownProfileSchema = profileBaseSchema.extend({
   interests: tagsSchema
     .min(3, "Minimum of 3 tags required")
     .max(6, "Maximum of 6 tags allowed"),
-  // location: To do
+  address: z.string().min(3, "Address is too short"),
+  lat: z.number(),
+  lon: z.number(),
   sex_pref:z.enum(['heterosexual', 'gay', 'lesbian', 'bisexual']), 
 });
-export const updateOwnProfileSchema = ownProfileSchema.partial();
+export const updateOwnProfileSchema = ownProfileSchema.partial().extend({
+  lat: z.number().nullable().optional(),
+  lon: z.number().nullable().optional()
+});
 export type OwnProfileData = z.infer<typeof ownProfileSchema>;
 
 export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>

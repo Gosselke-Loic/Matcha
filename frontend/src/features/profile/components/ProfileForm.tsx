@@ -29,8 +29,10 @@ export default function ProfileForm ({ data }: ProfileFormProps) {
       biography: data.biography || "",
       gender: data.gender,
       interests: data.interests || [], // check if data.interests are empty?
-      sex_pref: data.sex_pref
-      // add location
+      sex_pref: data.sex_pref,
+      address: "",
+      lat: null,
+      lon: null
     },
     mode: "onTouched"
   });

@@ -45,7 +45,7 @@ async function handleResponse<S extends z.ZodType>(
 export const api = {
   async request<S extends z.ZodType>(
     endpoint: string,
-    options: RequestInit & { schema: S },
+    options: RequestInit & { schema: S,  },
     retry: boolean = true
   ): Promise<z.infer<S>> {
     const { schema, ...fetchOptions } = options;
@@ -77,7 +77,7 @@ export const api = {
 
   get: async <S extends z.ZodType>(
     endpoint: string,
-    schema: S 
+    schema: S
   ) => {
     return api.request(endpoint, {
       method: "GET",
@@ -116,4 +116,18 @@ export const api = {
     });
   },
   // to do, upload for images
+};
+
+export const externApi = {
+  get: async <S extends z.ZodType>(
+    url: string,
+    schema: S
+  ) => {
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'omit'
+    });
+
+    return (handleResponse(response, schema));
+  }
 };
