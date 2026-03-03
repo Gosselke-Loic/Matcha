@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const userSchema = z.object({
-  id: z.string(),
+  id: z.number().positive(),
   username: z.string(),
   is_complete: z.boolean(),
   // To do primary photo

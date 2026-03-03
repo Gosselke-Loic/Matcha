@@ -22,6 +22,5 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       <TanStackRouterDevtools />
     </>
   ),
-  errorComponent: GeneralError,
-  notFoundComponent: () => <div> To do, write a component </div>
+  errorComponent: GeneralError
 });

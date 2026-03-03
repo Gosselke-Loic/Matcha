@@ -2,11 +2,10 @@ import type { ZodError } from "zod";
 
 interface ZodErrorComponentProps {
   error: ZodError;
-  reset?: () => void;
 };
 
 export default function ZodErrorComponent(
-  { error, reset }: ZodErrorComponentProps
+  { error }: ZodErrorComponentProps
 ) {
   return (
     <div className="p-4 border-1-4 border-orange-500 bg-orange-50">
@@ -18,7 +17,6 @@ export default function ZodErrorComponent(
           </li>
         ))}
       </ul>
-      { reset && <button className="mt-2 text-sm underline">Retry</button> }
     </div>
   );  
 };

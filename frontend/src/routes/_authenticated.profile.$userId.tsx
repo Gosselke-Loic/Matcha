@@ -31,10 +31,14 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
   loader: async ({ context: { authStore, queryClient }, params: { userId } }) => {
     const isOwner = authStore.getState().user?.id === userId; 
 
-    await Promise.all([
-      queryClient.ensureQueryData(profileQueryOptions(userId, isOwner)),
-      ...(isOwner ? [queryClient.ensureQueryData(commonWordsOptions)] : [])
-    ]);
+    try {
+      await Promise.all([
+        queryClient.ensureQueryData(profileQueryOptions(userId, isOwner)),
+        ...(isOwner ? [queryClient.ensureQueryData(commonWordsOptions)] : [])
+      ]);
+    } catch (error) {
+      
+    };
   },
   component: ProfileComponent,
 });

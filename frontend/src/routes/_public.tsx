@@ -21,6 +21,8 @@ export const Route = createFileRoute('/_public')({
     }
   },
   errorComponent: GeneralError,
+  pendingComponent: PublicSpinner,
+  pendingMs: 500,
   component: () => (
     <>
       <PageTransition>
@@ -28,6 +30,9 @@ export const Route = createFileRoute('/_public')({
       </PageTransition>
     </>
   ),
-  pendingComponent: PublicSpinner,
-  pendingMs: 500
+  notFoundComponent: () => {
+    <div className='min-h-screen flex items-center justify-center bg-slate-50'>
+      { /* Not Found component */ }
+    </div>
+  }
 });

@@ -8,7 +8,7 @@ import { queryClient } from './api/client';
 import { routeTree } from './routeTree.gen';
 import { useAuthStore } from '@features/auth/store/auth-store';
 
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   context: {
     queryClient: undefined!,

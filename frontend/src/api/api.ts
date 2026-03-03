@@ -70,6 +70,7 @@ export const api = {
           // To do logout
         };
       };
+      // else?
     };
 
     return (handleResponse<S>(response, schema));
