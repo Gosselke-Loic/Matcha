@@ -21,6 +21,7 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
+    command: gunicorn --bind 0.0.0.0:5000 project.app:app
     container_name: api-backend
     restart: always
     env_file:
@@ -32,7 +33,7 @@ services:
         condition: service_healthy
 
   database:
-    image: postgres:16-alpine
+    image: postgis/postgis:16-3.4
     container_name: postgres-db
     volumes:
       - db_data:/var/lib/postgresql/data/
