@@ -5,7 +5,7 @@ import { userSchema } from "../schemas/user-schema";
 
 export const authMeOptions = queryOptions({
   queryKey: ['auth-me'],
-  queryFn: () => api.get('/auth/me', userSchema),
+  queryFn: async () => api.get('/auth/me', userSchema),
   staleTime: 1000 * 60 * 5,
   gcTime: 1000 * 60 * 60
 });
