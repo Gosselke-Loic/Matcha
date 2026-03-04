@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { useSuspenseQuery, useQuery } from '@tanstack/react-query';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, notFound, redirect } from '@tanstack/react-router';
 
+import ApiError from '@/api/ApiError';
 import { commonWordsOptions } from '@/api/common-queries';
 import { Profile } from '@/features/profile/components/Profile';
 import { ProfileBaseForm } from '@/features/profile/components/ProfileBaseForm';
@@ -37,7 +38,11 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
         ...(isOwner ? [queryClient.ensureQueryData(commonWordsOptions)] : [])
       ]);
     } catch (error) {
-      
+      if (error instanceof ApiError && error.status === 404) {
+        throw (notFound());
+      };
+
+      throw (error);
     };
   },
   component: ProfileComponent,
