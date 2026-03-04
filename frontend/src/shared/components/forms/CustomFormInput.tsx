@@ -28,7 +28,7 @@ export default function CustomFormInput (
         id={name}
         type={type}
         className={`px-3 py-2 border rounded-md outline-none transition-colors
-          ${error ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
+          ${error?.message ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
         `}
       />
     

@@ -30,7 +30,7 @@ export default function CustomTextareaInput (
         rows={4}
         id={name}
         className={`w-full p-3 border-2 rounded-xl outline-none transition-colors
-          ${error ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
+          ${error?.message ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
         `}
       />
 

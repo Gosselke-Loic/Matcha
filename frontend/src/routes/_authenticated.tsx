@@ -35,9 +35,7 @@ export const Route = createFileRoute('/_authenticated')({
   errorComponent: GeneralError,
   component: () => (
     <>
-      <nav>
-        
-      </nav>
+      <nav></nav>
       <PageTransition>
         <Outlet />
       </PageTransition>

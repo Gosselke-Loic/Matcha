@@ -6,9 +6,7 @@ export const commonWordsOptions = queryOptions({
     const response = await fetch('/common-words.json');
 
     if (!response.ok) {
-      throw new Error(
-        'Error to load common words',
-      );
+      throw new Error('Error to load common words');
     };
 
     const json = await response.json();
