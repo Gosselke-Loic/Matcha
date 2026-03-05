@@ -7,10 +7,11 @@ import {
   updateOwnProfileSchema
 } from "../schemas/profile-schema";
 import { useProfile } from "../hooks/use-profile";
+import { LocationFormInput } from "./LocationFormInput";
 import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
-import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
 import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
+import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
 
 interface ProfileFormProps {
   data: OwnProfileData;
@@ -64,8 +65,8 @@ export default function ProfileForm ({ data }: ProfileFormProps) {
         { /* custom select (gender) */ }
         <TagsFormManager tags={data.interests} />
         { /* custom select (sex_prefs) */ }
-        { /* custom input with debounce for location, call api nominatim */ }
-        
+        <LocationFormInput />
+                
         <div className="flex items-center justify-center">
           <CustomButton type="submit" isPending={updateProfile.isPending}>
             Update

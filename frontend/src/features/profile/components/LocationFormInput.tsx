@@ -9,15 +9,19 @@ import { locationQueryOptions } from "../services/location-options";
 export const LocationFormInput = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedTerm, setDebouncedTerm] = useState('');
-  const { register, setValue, formState: { errors } } = useFormContext();
+  const { register, setValue, getValues, formState: { errors } } = useFormContext();
 
   useEffect(() => {
+    if (searchTerm === getValues("address")) {
+      return ;
+    };
+    
     const timer = setTimeout(() => setDebouncedTerm(searchTerm), 500);
 
     return (() => clearTimeout(timer));
-  }, [searchTerm]);
+  }, [searchTerm, getValues]);
 
-  const error = errors["location"];
+  const error = errors["address"];
   const { data, status } = useQuery(locationQueryOptions(debouncedTerm));
 
   const handleGPS = () => {
@@ -31,11 +35,12 @@ export const LocationFormInput = () => {
 
         if (data.features && data.features.length > 0) {
           const properties = data.features[0].properties;
-          const address = `${properties.name} || '', ${properties.city} || ''`;
 
-          setValue("address", address);
+          setValue("address", properties.name, { shouldValidate: true });
           setValue("lat", latitude);
           setValue("lon", longitude);
+
+          setSearchTerm(properties.name);
         };
       } catch (error) {
         // toast with try again later message
@@ -53,9 +58,10 @@ export const LocationFormInput = () => {
     };
 
     if (!data?.features || data.features.length === 0) {
-      return (<li className="p-2 text-gray-500 italic">No address founded.</li>)
+      return (<li className="p-2 text-gray-500 italic">No addresses founded.</li>)
     };
 
+    { /* keep old data to prevent flickering, maybe need spinner UX */ }
     return (
       data.features.map((feature, idx) => (
         <li
@@ -63,10 +69,10 @@ export const LocationFormInput = () => {
           className="p-2 hover:bg-pink-50 cursor-pointer text-sm"
           onClick={() => {
             const [lat, lon] = feature.geometry.coordinates;
-            setValue('address', feature.properties.name);
+            setValue('address', feature.properties.name, { shouldValidate: true });
             setValue('lat', lat);
             setValue('lon', lon);
-            setSearchTerm(feature.properties.name);
+            setSearchTerm(searchTerm);
           }}
         >
           {feature.properties.name}, {feature.properties.city}
@@ -84,10 +90,17 @@ export const LocationFormInput = () => {
 
         <input
           {...register("address")}
+          value={searchTerm}
           id="address"
           type="search"
           placeholder="City or address..."
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setSearchTerm(val);
+
+            setValue("lat", undefined);
+            setValue("lon", undefined);
+          }}
           className={`px-3 py-2 border rounded-md outline-none transition-colors
             ${error?.message ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
           `}
@@ -98,13 +111,19 @@ export const LocationFormInput = () => {
           onClick={handleGPS}
           className="bg-gray-100 px-3 rounded hover:bg-gray-200"
         >
-          My location
-        </button>  
+          Locate Me
+        </button>
       </div>
 
-      <ul className="bg-white border rounded shadow-sm max-h-40 overflow-auto">
+      <ul className="absolute z-10 bg-white border rounded shadow-sm max-h-40 overflow-auto">
         {renderList()}
       </ul>
+
+      {error?.message && (
+        <span className="text-xs text-red-500 font-medium">
+          { error.message.toString() }
+        </span>
+      )}
 
       <input type="hidden" {...register("lat")} />
       <input type="hidden" {...register("lon")} />

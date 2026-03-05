@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
 import { api } from "@/api/api";
 import {
@@ -15,6 +15,7 @@ export const profileQueryOptions = (
     `/users/${userId}`,
     isOwner ? ownProfileSchema : profileSchema
   ),
+  placeholderData: keepPreviousData,
   staleTime: 1000 * 60 * 5,
   gcTime: 1000 * 60 * 60
 });
