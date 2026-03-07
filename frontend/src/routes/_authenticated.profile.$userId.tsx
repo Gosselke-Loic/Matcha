@@ -20,13 +20,13 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
     }),
   },
   beforeLoad: ({ context, location }) => {
-    const { user } = context.authStore.getState();
+    const { isAuthenticated } = context.authStore.getState();
 
-    if (!user) {
+    if (!isAuthenticated) {
       throw redirect({
         to: '/login',
         search: { redirect: location.href }
-      })
+      });
     };
   },
   loader: async ({ context: { authStore, queryClient }, params: { userId } }) => {
@@ -60,11 +60,11 @@ function ProfileComponent() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-50'>
-      {('email' in profile) ? (
-        <ProfileBaseForm data={profile} commonWords={commonWords} />
+      {('interests' in profile) ? (
+        <ProfileBaseForm data={profile.user} interests={profile.interests} commonWords={commonWords} />
       ) : (
-        <Profile data={profile} />
+        <Profile data={profile.user} />
       )}
     </div>
-  )
+  );
 };

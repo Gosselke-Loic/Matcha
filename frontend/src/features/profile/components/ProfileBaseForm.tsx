@@ -1,15 +1,19 @@
 import ProfileForm from "./ProfileForm";
+import type { Tags } from "@/shared/schemas/tag-schema";
 import { ProfilePasswordForm } from "./ProfilePasswordForm";  
 import type { OwnProfileData } from "../schemas/profile-schema";
 
 interface ProfileBaseFormProps {
   data: OwnProfileData;
+  interests: Tags;
   commonWords: Set<string> | undefined;
 };
 
 const EMPTY_SET = new Set<string>();
 
-export function ProfileBaseForm ({ data, commonWords }: ProfileBaseFormProps) {
+export function ProfileBaseForm (
+  { data, interests, commonWords }: ProfileBaseFormProps
+) {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-4 md:p-8">
       <header>
@@ -22,7 +26,7 @@ export function ProfileBaseForm ({ data, commonWords }: ProfileBaseFormProps) {
             <p className="text-sm text-muted-foreground">Modify your informations</p> 
           </div>
           { /* add non form data information -> birthday, fameRate */ }
-          <ProfileForm data={data} />
+          <ProfileForm interests={interests} data={data} />
         </section>
         <section>
           <div className="mb-6">

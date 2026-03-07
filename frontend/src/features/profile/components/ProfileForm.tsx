@@ -1,23 +1,25 @@
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import { FormProvider, useForm } from "react-hook-form";  
 
 import {
   type OwnProfileData,
-  updateOwnProfileSchema
+  updateOwnProfileSchema,
+  type UpdateOwnProfileData
 } from "../schemas/profile-schema";
 import { useProfile } from "../hooks/use-profile";
 import { LocationFormInput } from "./LocationFormInput";
+import type { Tags } from "@/shared/schemas/tag-schema"; 
 import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
 import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
 
 interface ProfileFormProps {
+  interests: Tags;
   data: OwnProfileData;
 };
 
-export default function ProfileForm ({ data }: ProfileFormProps) {
+export default function ProfileForm ({ data, interests }: ProfileFormProps) {
   const { updateProfile } = useProfile();
   
   const methods = useForm({
@@ -38,7 +40,7 @@ export default function ProfileForm ({ data }: ProfileFormProps) {
     mode: "onTouched"
   });
 
-  const onSubmit = (data: z.infer<typeof updateOwnProfileSchema>) => {
+  const onSubmit = (data: UpdateOwnProfileData) => {
     updateProfile.mutate(data, {
       // can add custom handle onSuccess or onError
     });
@@ -63,7 +65,7 @@ export default function ProfileForm ({ data }: ProfileFormProps) {
           maxLength={500}
         />
         { /* custom select (gender) */ }
-        <TagsFormManager tags={data.interests} />
+        <TagsFormManager tags={interests} />
         { /* custom select (sex_prefs) */ }
         <LocationFormInput />
                 

@@ -58,9 +58,10 @@ export const ownProfileSchema = profileBaseSchema.extend({
   lon: optionalZodType(
     z.number().min(-180).max(180)
   ),
-  gender: z.enum(['male', 'female', 'non-binary'], "Please select a valid gender"),
   sex_pref: z.enum(['heterosexual', 'gay', 'lesbian', 'bisexual']), 
 });
+export type OwnProfileData = z.infer<typeof ownProfileSchema>;
+
 export const updateOwnProfileSchema = ownProfileSchema.partial().refine(
   (data) => {
     if (data.address && data.address.length > 0) {
@@ -74,7 +75,7 @@ export const updateOwnProfileSchema = ownProfileSchema.partial().refine(
     path: ["address"]
   }
 );
-export type OwnProfileData = z.infer<typeof ownProfileSchema>;
+export type UpdateOwnProfileData = z.infer<typeof updateOwnProfileSchema>;
 
 export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>
   z.object({

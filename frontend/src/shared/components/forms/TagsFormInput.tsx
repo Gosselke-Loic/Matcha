@@ -6,9 +6,8 @@ interface TagsFormManagerProps {
   tags: Tags;
 };
 
-// Add emoti label if isActive or not
 export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
-  const { control, setValue } = useFormContext();
+  const { control } = useFormContext();
 
   return (
     <div className="flex flex-col gap-3">
@@ -19,15 +18,14 @@ export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
       <Controller
         name="interests"
         control={control}
-        render={({ field: { value: selectedIds }, fieldState: { error } }) => {
-
-          const toggleTag = (id: string) => {
-            
+        render={({ field: { value, onChange }, fieldState: { error } }) => {
+          const selectedIds: number[] = Array.isArray(value) ? value : [];
+          const toggleTag = (id: number) => {  
             const newValues = selectedIds.includes(id)
-              ? selectedIds.filter((i: string) => i !== id)
+              ? selectedIds.filter((i: number) => i !== id)
               : [...selectedIds, id];
 
-            setValue("interests", newValues, { shouldValidate: true });
+            onChange(newValues);
           };
 
           return (
@@ -40,12 +38,16 @@ export const TagsFormManager = ({ tags }: TagsFormManagerProps) => {
                     <button
                       key={tag.id}
                       type="button"
+                      aria-pressed={isActive}
                       onClick={() => toggleTag(tag.id)}
-                      className={`px-4 py-2 rounded-full border transition-all
-                        ${ isActive ? "bg-pink-500 text-white" : "bg-gray-100" }
+                      className={`px-4 py-2 rounded-full border transition-all text-sm font-medium
+                        ${ isActive
+                          ? "bg-pink-500 text-white border-pink-600 shadow-sm"
+                          : "bg-gray-100 border-gray-200 hover:bg-gray-200"
+                        }
                       `}
                     >
-                      { isActive ? `${tag.label}`: tag.label }
+                      {tag.label}
                     </button>
                   );
                 })}

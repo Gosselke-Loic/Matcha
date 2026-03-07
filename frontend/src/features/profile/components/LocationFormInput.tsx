@@ -1,52 +1,27 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useFormContext } from "react-hook-form";
 
-import { externApi } from "@/api/api";
-import { photonApiSchema } from "../schemas/photon-api-schema";
-import { locationQueryOptions } from "../services/location-options";
+import { useAddressSearch } from "../hooks/useAddressSearch";
 
-export const LocationFormInput = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedTerm, setDebouncedTerm] = useState('');
-  const { register, setValue, getValues, formState: { errors } } = useFormContext();
-
-  useEffect(() => {
-    if (searchTerm === getValues("address")) {
-      return ;
-    };
-    
-    const timer = setTimeout(() => setDebouncedTerm(searchTerm), 500);
-
-    return (() => clearTimeout(timer));
-  }, [searchTerm, getValues]);
-
+export const LocationFormInput = () => {  
+  const {
+    register,
+    setValue,
+    formState: { errors }
+  } = useFormContext();
   const error = errors["address"];
-  const { data, status } = useQuery(locationQueryOptions(debouncedTerm));
 
-  const handleGPS = () => {
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
-      
-      try {
-        const data = await externApi.get(
-          `https://photon.komoot.io/reverse?lon=${longitude}&lat=${latitude}`, photonApiSchema
-        );
-
-        if (data.features && data.features.length > 0) {
-          const properties = data.features[0].properties;
-
-          setValue("address", properties.name, { shouldValidate: true });
-          setValue("lat", latitude);
-          setValue("lon", longitude);
-
-          setSearchTerm(properties.name);
-        };
-      } catch (error) {
-        // toast with try again later message
-      };
-    });
-  };
+  const {
+    status,
+    showList,
+    handleGPS,
+    searchTerm,
+    setShowList,
+    suggestions,
+    containerRef,
+    setSearchTerm,
+    setIsSelected,
+    onSelectOption
+  } = useAddressSearch({ setValue });
 
   const renderList = () => {
     if (status === "pending") {
@@ -57,23 +32,17 @@ export const LocationFormInput = () => {
       return (<li className="p-2 text-red-500">Unable to contact the geolocation service</li>)
     };
 
-    if (!data?.features || data.features.length === 0) {
+    if (!suggestions || suggestions.length === 0) {
       return (<li className="p-2 text-gray-500 italic">No addresses founded.</li>)
     };
 
     { /* keep old data to prevent flickering, maybe need spinner UX */ }
     return (
-      data.features.map((feature, idx) => (
+      suggestions.map((feature, idx) => (
         <li
           key={`${feature.properties.name}-${idx}`}
           className="p-2 hover:bg-pink-50 cursor-pointer text-sm"
-          onClick={() => {
-            const [lat, lon] = feature.geometry.coordinates;
-            setValue('address', feature.properties.name, { shouldValidate: true });
-            setValue('lat', lat);
-            setValue('lon', lon);
-            setSearchTerm(searchTerm);
-          }}
+          onClick={() => {onSelectOption(feature)}}
         >
           {feature.properties.name}, {feature.properties.city}
         </li>
@@ -82,7 +51,7 @@ export const LocationFormInput = () => {
   };
 
   return (
-    <div className="space-y-2 border-l-2 border-pink-500 pl-4">
+    <div ref={containerRef} className="relative w-full">
       <div className="flex flex-col gap-1.5 mb-4">
         <label htmlFor="address" className="text-sm font-medium text-slate-700">
           Your address
@@ -91,16 +60,15 @@ export const LocationFormInput = () => {
         <input
           {...register("address")}
           value={searchTerm}
-          id="address"
           type="search"
-          placeholder="City or address..."
           onChange={(e) => {
-            const val = e.target.value;
-            setSearchTerm(val);
-
+            setIsSelected(false);
+            setSearchTerm(e.target.value);
             setValue("lat", undefined);
             setValue("lon", undefined);
           }}
+          onFocus={() => setShowList(true)}
+          placeholder="City or address..."
           className={`px-3 py-2 border rounded-md outline-none transition-colors
             ${error?.message ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
           `}
@@ -115,9 +83,11 @@ export const LocationFormInput = () => {
         </button>
       </div>
 
-      <ul className="absolute z-10 bg-white border rounded shadow-sm max-h-40 overflow-auto">
-        {renderList()}
-      </ul>
+      {showList && (  
+        <ul className="absolute w-full mt-1 z-50 bg-white border rounded shadow-sm max-h-40 overflow-auto">
+          {renderList()}
+        </ul>
+      )}
 
       {error?.message && (
         <span className="text-xs text-red-500 font-medium">

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const tagSchema = z.object({
-  id: z.string(),
+  id: z.coerce.number().positive(),
   label: z.string()
 });
 export const tagsSchema = z.array(tagSchema);
