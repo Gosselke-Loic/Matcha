@@ -13,6 +13,9 @@ import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
 import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
+import SelectFormInput from "@/shared/components/forms/SelectFormInput";
+import { genderEnum } from "@/shared/schemas/gender-schema";
+import { sexPrefsEnum } from "@/shared/schemas/sex_prefs-schema";
 
 interface ProfileFormProps {
   interests: Tags;
@@ -64,9 +67,13 @@ export default function ProfileForm ({ data, interests }: ProfileFormProps) {
           maxLengthNumber={500}
           maxLength={500}
         />
-        { /* custom select (gender) */ }
+
+        <SelectFormInput enumSchema={genderEnum} name="gender" label="Gender" />
+
         <TagsFormManager tags={interests} />
-        { /* custom select (sex_prefs) */ }
+
+        <SelectFormInput enumSchema={sexPrefsEnum} name="sex_pref" label="Sexual preference" />
+
         <LocationFormInput />
                 
         <div className="flex items-center justify-center">

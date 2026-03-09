@@ -36,7 +36,6 @@ export const LocationFormInput = () => {
       return (<li className="p-2 text-gray-500 italic">No addresses founded.</li>)
     };
 
-    { /* keep old data to prevent flickering, maybe need spinner UX */ }
     return (
       suggestions.map((feature, idx) => (
         <li

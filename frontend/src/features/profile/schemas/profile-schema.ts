@@ -7,6 +7,8 @@ import {
   getPasswordFields
 } from '@shared/schemas/common';
 import { tagsSchema } from '@/shared/schemas/tag-schema';
+import { genderEnum } from '@/shared/schemas/gender-schema';
+import { sexPrefsEnum } from '@/shared/schemas/sex_prefs-schema';
 
 const profileBaseSchema = z.object({
   username: z.string(),
@@ -16,7 +18,7 @@ const profileBaseSchema = z.object({
   birthdayDate: isoDateTime,
   fameRate: z.number().nullable(),
   interests: tagsSchema,
-  gender: z.enum(['male', 'female', 'non-binary'])
+  gender: genderEnum
   // photos: z.array(z.url())
 });
 
@@ -58,7 +60,7 @@ export const ownProfileSchema = profileBaseSchema.extend({
   lon: optionalZodType(
     z.number().min(-180).max(180)
   ),
-  sex_pref: z.enum(['heterosexual', 'gay', 'lesbian', 'bisexual']), 
+  sex_pref: sexPrefsEnum
 });
 export type OwnProfileData = z.infer<typeof ownProfileSchema>;
 
