@@ -2,9 +2,8 @@ import { z } from 'zod';
 
 import {
   FORM_RULES,
-  isoDateTime,
   optionalZodType,
-  getPasswordFields
+  getPasswordFields,
 } from '@shared/schemas/common';
 import { tagsSchema } from '@/shared/schemas/tag-schema';
 import { genderEnum } from '@/shared/schemas/gender-schema';
@@ -15,20 +14,31 @@ const profileBaseSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   biography: z.string().nullable(),
-  birthdayDate: isoDateTime,
+  birthdayDate: z.coerce.date(),
   fameRate: z.number().nullable(),
   interests: tagsSchema,
-  gender: genderEnum
-  // photos: z.array(z.url())
+  gender: z.string(),
+  address: z.string(),
+  profileImages: z.array(z.string())
 });
 
+
 export const profileSchema = profileBaseSchema.extend({
-  lastSeen: z.coerce.date(),
-  distance: z.number().optional(), // maybe change to just city or country
+  lastSeen: z.coerce.date()
 });
 export type ProfileData = z.infer<typeof profileSchema>;
 
+// Maybe lat and lon are not necessary, just address is enough
 export const ownProfileSchema = profileBaseSchema.extend({
+  email: z.string(),
+  lat: z.number(),
+  lon: z.number(),
+  sex_pref: z.string()
+});
+export type OwnProfileData = z.infer<typeof ownProfileSchema>;
+
+
+const validationOwnProfileSchema = z.object({
   username: optionalZodType(
     FORM_RULES.username
   ),
@@ -60,11 +70,10 @@ export const ownProfileSchema = profileBaseSchema.extend({
   lon: optionalZodType(
     z.number().min(-180).max(180)
   ),
+  gender: genderEnum,
   sex_pref: sexPrefsEnum
 });
-export type OwnProfileData = z.infer<typeof ownProfileSchema>;
-
-export const updateOwnProfileSchema = ownProfileSchema.partial().refine(
+export const updateOwnProfileSchema = validationOwnProfileSchema.partial().refine(
   (data) => {
     if (data.address && data.address.length > 0) {
       return (data.lat !== undefined && data.lon !== undefined);
@@ -79,6 +88,7 @@ export const updateOwnProfileSchema = ownProfileSchema.partial().refine(
 );
 export type UpdateOwnProfileData = z.infer<typeof updateOwnProfileSchema>;
 
+
 export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>
   z.object({
     oldPassword: z.string().min(1, "Required"),
@@ -89,3 +99,17 @@ export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>
   });
 type ProfilePasswordFormValues = ReturnType<typeof createProfilePasswordFormSchema>;
 export type profilePasswordFormData = z.infer<ProfilePasswordFormValues>;
+
+export const imagesFormSchema = z.object({
+  images: z
+    .custom<FileList>()
+    .transform((list) => (list ? Array.from(list) : []))
+    .refine((files) => files.length > 5, "5 images minimum are required")
+    .refine((files) => files.every((file) => file.size <= (5 * 1024 * 1024)),
+      "File size 5mb maximum"
+    )
+    .refine(
+      (files) => files.every((file) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type)),
+      "Only .jpeg, .jpg, .png or .webp are supported"
+    )
+});

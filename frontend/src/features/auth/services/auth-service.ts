@@ -18,10 +18,13 @@ export const authApi = {
     return (api.post("/auth/logout", {}, z.void()));
   },
   register: (data: RegisterFormData) => {
-    const { confirmPassword, ...payload } = data;
+    const { confirmPassword, birthday, ...payload } = data;
     return (api.post(
       "/auth/register",
-      payload,
+      {
+        ...payload,
+        birthday: birthday.toISOString().split('T')[0]
+      },
       z.void()
     ));
   },

@@ -19,15 +19,32 @@ export function ProfileBaseForm (
       <header>
         <h1 className="text-2xl font bold tracking-tight">Your Profile</h1>
       </header>
-      <div className="grid gap-8">
+    
+      <div className="grid gap-4">
         <section className="rounded-xl border bg-card p-6 shadow-sm">
           <div className="mb-6">
             <h2 className="text-lg font-semibold">Personal informations</h2>
             <p className="text-sm text-muted-foreground">Modify your informations</p> 
           </div>
-          { /* add non form data information -> birthday, fameRate */ }
+
+          { /* calculate age and change tailwind */ }
+          <div className="flex flex-col gap-1 py-3 border-b border-gray-100">
+            <label className="text-sm font-medium text-gray-500">Birthday data</label>
+            <span className="text-gray-900 font-medium">
+              {data.birthdayDate.toLocaleDateString('fr-CH')}
+            </span>
+          
+            <label className="text-sm font-medium text-gray-500">Fame rate</label>
+            <span className="text-gray-900 font-medium">{data.fameRate}</span>
+          </div>
+
           <ProfileForm interests={interests} data={data} />
         </section>
+
+        <section>
+          { /* Images section */ }
+        </section>
+
         <section>
           <div className="mb-6">
             <h2 className="text-lg font-semibold">Security</h2>

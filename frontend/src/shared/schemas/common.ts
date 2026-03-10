@@ -18,11 +18,6 @@ export const getPasswordFields = ( commonWords: Set<string> ) => ({
   confirmPassword: z.string()
 });
 
-export const isoDateTime = z
-  .iso
-  .datetime({ error: "Invalid ISO 8601 date format" })
-  .pipe(z.coerce.date());
-
 export const optionalZodType = <S extends z.ZodType>(schema: S) =>
   z.preprocess((val) => {
     if (val === "" || val === null || val === undefined) {

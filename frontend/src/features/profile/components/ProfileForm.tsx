@@ -1,5 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod"; 
-import { FormProvider, useForm } from "react-hook-form";  
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
 
 import {
   type OwnProfileData,
@@ -9,13 +9,13 @@ import {
 import { useProfile } from "../hooks/use-profile";
 import { LocationFormInput } from "./LocationFormInput";
 import type { Tags } from "@/shared/schemas/tag-schema"; 
-import CustomButton from "@/shared/components/forms/SubmitButton";
-import CustomFormInput from "@/shared/components/forms/CustomFormInput";
-import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
-import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
-import SelectFormInput from "@/shared/components/forms/SelectFormInput";
 import { genderEnum } from "@/shared/schemas/gender-schema";
 import { sexPrefsEnum } from "@/shared/schemas/sex_prefs-schema";
+import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomFormInput from "@/shared/components/forms/CustomFormInput";
+import SelectFormInput from "@/shared/components/forms/SelectFormInput";
+import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
+import CustomTextareaInput from "@/shared/components/forms/TextareaFormInput";
 
 interface ProfileFormProps {
   interests: Tags;
@@ -24,6 +24,9 @@ interface ProfileFormProps {
 
 export default function ProfileForm ({ data, interests }: ProfileFormProps) {
   const { updateProfile } = useProfile();
+
+  const gender = genderEnum.safeParse(data.gender);
+  const sexPref = sexPrefsEnum.safeParse(data.sex_pref);
   
   const methods = useForm({
     resolver: zodResolver(updateOwnProfileSchema),
@@ -33,12 +36,12 @@ export default function ProfileForm ({ data, interests }: ProfileFormProps) {
       firstName: data.firstName,
       lastName: data.lastName,
       biography: data.biography || "",
-      gender: data.gender,
-      interests: data.interests || [], // check if data.interests are empty?
-      sex_pref: data.sex_pref,
-      address: "",
-      lat: null,
-      lon: null
+      gender: gender.success ? gender.data : "non-binary",
+      interests: data.interests || [],
+      sex_pref: sexPref.success ? sexPref.data : "bisexual",
+      address: data.address || "",
+      lat: data.lat || null,
+      lon: data.lon || null
     },
     mode: "onTouched"
   });
