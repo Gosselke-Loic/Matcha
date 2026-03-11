@@ -22,6 +22,7 @@ CREATE TABLE users (
   interests_cache INTEGER[] DEFAULT '{}',
   biography TEXT,
   location GEOMETRY(Point, 4326),
+  is_complete BOOL DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -66,5 +67,5 @@ CREATE TABLE user_photos (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   url TEXT NOT NULL,
-  -- More properties? is_primary boolean
+  is_primary BOOL DEFAULT FALSE,
 );
