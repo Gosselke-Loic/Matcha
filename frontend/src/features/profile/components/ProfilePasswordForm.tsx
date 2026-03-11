@@ -5,7 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import {
   type profilePasswordFormData,
   createProfilePasswordFormSchema
-} from "../schemas/profile-schema";
+} from "../schemas/password-schema";
 import { useProfile } from "../hooks/use-profile";
 import CustomButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";

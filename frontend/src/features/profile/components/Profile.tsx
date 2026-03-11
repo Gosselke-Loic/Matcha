@@ -1,10 +1,12 @@
 import type { ProfileData } from "../schemas/profile-schema";
+import type { ImagesProfileData } from "../schemas/images-schema";
 
 interface ProfileProps {
   data: ProfileData;
+  images: ImagesProfileData;
 };
 
-export const Profile = ({ data }: ProfileProps) => {
+export const Profile = ({ data, images }: ProfileProps) => {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-4 md:p-8">
       <header>

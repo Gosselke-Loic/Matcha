@@ -26,8 +26,23 @@ export const useProfile = () => {
     }
   });
 
+  const deleteImageProfileMutation = useMutation({
+    
+  });
+
+  const setMainImageProfileMutation = useMutation({
+    
+  });
+
+  const uploadImagesProfileMutation = useMutation({
+    
+  });
+
   return ({
     updateProfile: updateProfileMutation,
+    deleteImage: deleteImageProfileMutation,
+    uploadImages: uploadImagesProfileMutation,
+    setMainImage: setMainImageProfileMutation,
     updatePasswordProfile: updatePasswordProfileMutation
   });
 };

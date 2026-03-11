@@ -7,6 +7,7 @@ import {
   ownProfileSchema
 } from "../schemas/profile-schema";
 import { tagsSchema } from "@/shared/schemas/tag-schema";
+import { imagesProfileSchema } from "../schemas/images-schema";
 
 const ownProfileResponseSchema = z.object({
   interests: tagsSchema,
@@ -29,6 +30,16 @@ export const profileQueryOptions = (
 
     return (api.get(`/users/${userId}`, profileResponseSchema));
   },
+  placeholderData: keepPreviousData,
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 60
+});
+
+export const profileImagesQueryOptions = (
+  userId: number
+) => queryOptions({
+  queryKey: ['profile', 'images', userId],
+  queryFn: async () => api.get(`/users/${userId}/images`, imagesProfileSchema),
   placeholderData: keepPreviousData,
   staleTime: 1000 * 60 * 5,
   gcTime: 1000 * 60 * 60

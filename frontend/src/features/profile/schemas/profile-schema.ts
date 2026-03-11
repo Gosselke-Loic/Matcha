@@ -3,13 +3,13 @@ import { z } from 'zod';
 import {
   FORM_RULES,
   optionalZodType,
-  getPasswordFields,
 } from '@shared/schemas/common';
 import { tagsSchema } from '@/shared/schemas/tag-schema';
 import { genderEnum } from '@/shared/schemas/gender-schema';
 import { sexPrefsEnum } from '@/shared/schemas/sex_prefs-schema';
 
 const profileBaseSchema = z.object({
+  id: z.number().positive(),
   username: z.string(),
   firstName: z.string(),
   lastName: z.string(),
@@ -19,7 +19,6 @@ const profileBaseSchema = z.object({
   interests: tagsSchema,
   gender: z.string(),
   address: z.string(),
-  profileImages: z.array(z.string())
 });
 
 
@@ -87,29 +86,3 @@ export const updateOwnProfileSchema = validationOwnProfileSchema.partial().refin
   }
 );
 export type UpdateOwnProfileData = z.infer<typeof updateOwnProfileSchema>;
-
-
-export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>
-  z.object({
-    oldPassword: z.string().min(1, "Required"),
-    ...getPasswordFields(commonWords)
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "The passwords do not match",
-    path: ['confirmPassword']
-  });
-type ProfilePasswordFormValues = ReturnType<typeof createProfilePasswordFormSchema>;
-export type profilePasswordFormData = z.infer<ProfilePasswordFormValues>;
-
-export const imagesFormSchema = z.object({
-  images: z
-    .custom<FileList>()
-    .transform((list) => (list ? Array.from(list) : []))
-    .refine((files) => files.length > 5, "5 images minimum are required")
-    .refine((files) => files.every((file) => file.size <= (5 * 1024 * 1024)),
-      "File size 5mb maximum"
-    )
-    .refine(
-      (files) => files.every((file) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type)),
-      "Only .jpeg, .jpg, .png or .webp are supported"
-    )
-});

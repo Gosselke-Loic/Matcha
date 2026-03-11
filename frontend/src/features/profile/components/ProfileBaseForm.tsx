@@ -1,10 +1,13 @@
 import ProfileForm from "./ProfileForm";
+import calculateAge from "@/shared/utils/calculateAge";
 import type { Tags } from "@/shared/schemas/tag-schema";
 import { ProfilePasswordForm } from "./ProfilePasswordForm";  
 import type { OwnProfileData } from "../schemas/profile-schema";
+import type { ImagesProfileData } from "../schemas/images-schema";
 
 interface ProfileBaseFormProps {
   data: OwnProfileData;
+  images: ImagesProfileData;
   interests: Tags;
   commonWords: Set<string> | undefined;
 };
@@ -27,11 +30,10 @@ export function ProfileBaseForm (
             <p className="text-sm text-muted-foreground">Modify your informations</p> 
           </div>
 
-          { /* calculate age and change tailwind */ }
           <div className="flex flex-col gap-1 py-3 border-b border-gray-100">
-            <label className="text-sm font-medium text-gray-500">Birthday data</label>
+            <label className="text-sm font-medium text-gray-500">Age</label>
             <span className="text-gray-900 font-medium">
-              {data.birthdayDate.toLocaleDateString('fr-CH')}
+              {calculateAge(data.birthdayDate)} years old
             </span>
           
             <label className="text-sm font-medium text-gray-500">Fame rate</label>

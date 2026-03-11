@@ -6,7 +6,7 @@ import ApiError from '@/api/ApiError';
 import { commonWordsOptions } from '@/api/common-queries';
 import { Profile } from '@/features/profile/components/Profile';
 import { ProfileBaseForm } from '@/features/profile/components/ProfileBaseForm';
-import { profileQueryOptions } from '@/features/profile/services/profile-options';
+import { profileImagesQueryOptions, profileQueryOptions } from '@/features/profile/services/profile-options';
 
 const ProfileParamsSchema = z.preprocess(
   (val) => (val === "" ? undefined : val),
@@ -35,6 +35,7 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
     try {
       await Promise.all([
         queryClient.ensureQueryData(profileQueryOptions(userId, isOwner)),
+        queryClient.ensureQueryData(profileImagesQueryOptions(userId)),
         ...(isOwner ? [queryClient.ensureQueryData(commonWordsOptions)] : [])
       ]);
     } catch (error) {
@@ -55,15 +56,21 @@ function ProfileComponent() {
   const user = authStore((state) => state.user); 
   const isOwner = user?.id === userId;
 
+  const { data: images } = useSuspenseQuery(profileImagesQueryOptions(userId));
   const { data: profile } = useSuspenseQuery(profileQueryOptions(userId, isOwner));
   const { data: commonWords } = useQuery({ ...commonWordsOptions, enabled: isOwner });
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-50'>
       {('interests' in profile) ? (
-        <ProfileBaseForm data={profile.user} interests={profile.interests} commonWords={commonWords} />
+        <ProfileBaseForm
+          images={images}
+          data={profile.user}
+          commonWords={commonWords}
+          interests={profile.interests}
+        />
       ) : (
-        <Profile data={profile.user} />
+        <Profile images={images} data={profile.user} />
       )}
     </div>
   );
