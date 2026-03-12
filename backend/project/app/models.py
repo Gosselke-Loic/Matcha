@@ -71,6 +71,16 @@ class RefreshToken(db.Model):
     user = db.relationship("User", backref="refresh_tokens")
 
 
+class MailToken(db.Model):
+    __tablename__ = "mail_tokens"
+    id = db.Column(db.Integer, primary_key=True)
+    token_hash = db.Column(db.String(64), unique=True, nullable=False)  # sha256 hex
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    used = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
+
+
 class UserPrefs(db.Model):
     __tablename__ = "user_prefs"
 

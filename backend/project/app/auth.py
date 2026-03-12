@@ -1,3 +1,4 @@
+import secrets, hashlib
 from datetime import datetime, timedelta, timezone
 from flask import Blueprint, jsonify, request, current_app, url_for
 from flask_jwt_extended import (
@@ -6,7 +7,7 @@ from flask_jwt_extended import (
     set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 )
 
-from .models import db, User, RefreshToken
+from .models import db, User, RefreshToken, MailToken
 from .security import verify_password, hash_password
 from .email import generate_token, send_confirmation_email, confirm_token, send_reset_email
 
@@ -49,6 +50,19 @@ def get_refresh_expires_delta():
     if isinstance(delta, int):
         return timedelta(seconds=delta)
     return delta
+
+
+def issue_password_reset_token(user):
+    raw = secrets.token_urlsafe(48)
+    h = hashlib.sha256(raw.encode()).hexdigest()
+    pr = MailToken(
+        token_hash=h,
+        user_id=user.id,
+        expires_at=datetime.now(timezone.utc) + timedelta(minutes=5)
+    )
+    db.session.add(pr)
+    db.session.commit()
+    return url_for("auth.password_reset_confirm", token=raw, _external=True)
 
 
 @bp.route("/signup", methods=["POST"])
@@ -117,8 +131,7 @@ def request_password_reset():
         return jsonify(msg="Invlid request"), 400
     user = User.query.filter_by(email=email).first()
     if user:
-        token = generate_token(str(user.id))
-        reset_url = url_for("auth.password_reset_confirm", token=token, _external=True)
+        reset_url = issue_password_reset_token(user)
         send_reset_email(user.email, reset_url)
         db.session.commit()
         return jsonify(msg="A reset link has been sent"), 200
@@ -128,14 +141,17 @@ def request_password_reset():
 @bp.route("/password-reset/confirm", methods=["POST"])
 def password_reset_confirm():
     data = request.get_json() or {}
-    token = data.get("token")
+    raw = data.get("token")
     new_password = data.get("new_password")
-    if not token or not new_password:
+    if not raw or not new_password:
         return jsonify(msg="Invalid request"), 400
-    user_id = confirm_token(token, max_age=5*60)
-    if not user_id:
+
+    h = hashlib.sha256(raw.encode()).hexdigest()
+    pr = MailToken.query.filter_by(token_hash=h).first()
+    if not pr or pr.used or pr.expires_at < datetime.now(timezone.utc):
         return jsonify(msg="Invalid or expired token"), 400
-    user = User.query.get(int(user_id))
+
+    user = User.query.get(pr.user_id)
     if not user:
         return jsonify(msg="Invalid token"), 400
     user.password = hash_password(new_password)

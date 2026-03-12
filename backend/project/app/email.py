@@ -1,6 +1,9 @@
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message, Mail
 from flask import current_app
+from datetime import datetime, timedelta, timezone
+
+from .models import MailToken
 
 
 mail = Mail()
