@@ -36,7 +36,7 @@ def seed_db():
     if "username" in cols:
         data["username"] = "test"
     if "email" in cols:
-        data["email"] = "test@example.com"
+        data["email"] = "sean.belometti@gmail.com"
     if "first_name" in cols:
         data["first_name"] = "Test"
     if "last_name" in cols:

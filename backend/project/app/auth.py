@@ -114,14 +114,15 @@ def request_password_reset():
     data = request.get_json() or {}
     email = (data.get("email") or "").strip().lower()
     if not email:
-        return jsonify(msg="If that email exists, a reset link has been sent"), 200
+        return jsonify(msg="Invlid request"), 400
     user = User.query.filter_by(email=email).first()
     if user:
         token = generate_token(str(user.id))
         reset_url = url_for("auth.password_reset_confirm", token=token, _external=True)
         send_reset_email(user.email, reset_url)
         db.session.commit()
-    return jsonify(msg="If that email exists, a reset link has been sent"), 200
+        return jsonify(msg="A reset link has been sent"), 200
+    return jsonify(msg="User not found"), 404
 
 
 @bp.route("/password-reset/confirm", methods=["POST"])
@@ -131,7 +132,7 @@ def password_reset_confirm():
     new_password = data.get("new_password")
     if not token or not new_password:
         return jsonify(msg="Invalid request"), 400
-    user_id = confirm_token(token, max_age=3600)
+    user_id = confirm_token(token, max_age=5*60)
     if not user_id:
         return jsonify(msg="Invalid or expired token"), 400
     user = User.query.get(int(user_id))

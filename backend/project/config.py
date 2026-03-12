@@ -24,7 +24,7 @@ class Config(object):
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-    MAIL_USERNAME = "smtp-user"
-    MAIL_PASSWORD = "smtp-pass"
-    MAIL_DEFAULT_SENDER = "Matcha <no-reply@matcha.com>"
-    MAIL_SUPPRESS_SEND = True
+    MAIL_USERNAME = "camgaru42@gmail.com"
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "super-secret")
+    MAIL_DEFAULT_SENDER = "Matcha"
+    MAIL_SUPPRESS_SEND = False

@@ -25,8 +25,8 @@ def send_confirmation_email(to_email: str, confirm_url: str, user_first_name: st
     subject = "Confirm your account"
     html = (
         f"<p>Hi {user_first_name},</p>"
-        f"<p>Confirm your email by clicking <a href=\"{confirm_url}\">this link</a>.</p>"
-        "<p>If you didn't sign up, you will die in 2 days.</p>"
+        f"<p>Confirm your email by clicking <a href=\"{confirm_url}\">this link</a>. You have 1 day.</p>"
+        "<p>If you didn't ask for this, you will die in 2 days.</p>"
     )
     msg = Message(subject=subject, recipients=[to_email], html=html)
 
@@ -38,7 +38,7 @@ def send_reset_email(to_email: str, reset_url: str):
     subject = "Reset your password"
     html = (
         f"<p>Hi,</p>"
-        f"<p>Reset your password by clicking <a href=\"{reset_url}\">this link</a>.</p>"
+        f"<p>Reset your password by clicking <a href=\"{reset_url}\">this link</a>. You have 5 minutes.</p>"
         "<p>If you didn't request this, you will die in 2 days.</p>"
     )
     msg = Message(subject=subject, recipients=[to_email], html=html)
