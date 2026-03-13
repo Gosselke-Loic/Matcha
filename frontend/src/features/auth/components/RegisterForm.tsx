@@ -9,7 +9,7 @@ import {
 import { useAuth } from "../hooks/use-auth";
 import BirthdayFormInput from "./BirthdayFormInput";
 import { useNavigate } from "@tanstack/react-router";
-import CustomButton from "@/shared/components/forms/SubmitButton"; 
+import CustomSubmitButton from "@/shared/components/forms/SubmitButton"; 
 import CustomFormInput from "@/shared/components/forms/CustomFormInput"; 
 
 interface RegisterFormProps {
@@ -63,9 +63,9 @@ export const RegisterForm = ({ commonWords }: RegisterFormProps) => {
         <CustomFormInput name="confirmPassword" label="Confirm password" type="password" />
 
         <div className="flex items-center justify-center">
-          <CustomButton type="submit" isPending={signup.isPending}>
+          <CustomSubmitButton type="submit" isPending={signup.isPending}>
             Signup
-          </CustomButton>
+          </CustomSubmitButton>
         </div>
 
       </form>

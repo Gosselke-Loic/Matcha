@@ -22,7 +22,16 @@ export const createRegisterSchema = (commonWords: Set<string>) =>
     email: z.email("Invalid email"),
     firstName: FORM_RULES.username,
     lastName: FORM_RULES.username,
-    birthday: z.coerce.date({ error: "Invalid date" }),
+    birthday: z.coerce.date()
+    .refine((date) => {
+      const today = new Date();
+      const eighteen = new Date(
+        today.getFullYear() - 18,
+        today.getMonth(),
+        today.getDate()
+      );
+      return (date <= eighteen);
+    }, { message: "You must be at least 18 years old" }),
     ...getPasswordFields(commonWords)
   }).refine((data) => data.password === data.confirmPassword, {
     message: "The passwords do not match",

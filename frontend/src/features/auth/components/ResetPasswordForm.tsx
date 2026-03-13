@@ -8,7 +8,7 @@ import {
 } from "../schemas/auth-schema";
 import { useAuth } from "../hooks/use-auth"; 
 import { useNavigate } from "@tanstack/react-router";
-import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 interface ResetPasswordFormProps {
@@ -49,9 +49,9 @@ export const ResetPasswordForm = ({ token, commonWords }: ResetPasswordFormProps
         <CustomFormInput name="confirmPassword" label="Confirm password" type="password" />
 
         <div className="flex items-center justify-center">
-          <CustomButton type="submit" isPending={resetPassword.isPending}>
+          <CustomSubmitButton type="submit" isPending={resetPassword.isPending}>
             Send
-          </CustomButton>
+          </CustomSubmitButton>
         </div>
 
       </form>

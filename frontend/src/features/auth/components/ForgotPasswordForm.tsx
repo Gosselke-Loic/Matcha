@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useAuth } from "../hooks/use-auth";
-import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 import { forgotPasswordSchema, type ForgotPasswordData } from "../schemas/auth-schema";
 
@@ -37,9 +37,9 @@ export const ForgotPasswordForm = () => {
         <CustomFormInput name="email" label="Email" type="email" placeholder="Ex: Cowboy554@gmail.com"/>
 
         <div className="flex items-center justify-center">
-          <CustomButton type="submit" isPending={forgotPassword.isPending}>
+          <CustomSubmitButton type="submit" isPending={forgotPassword.isPending}>
             Send
-          </CustomButton>
+          </CustomSubmitButton>
         </div>
 
       </form>
