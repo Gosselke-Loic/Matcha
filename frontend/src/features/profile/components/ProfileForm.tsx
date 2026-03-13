@@ -11,7 +11,7 @@ import { LocationFormInput } from "./LocationFormInput";
 import type { Tags } from "@/shared/schemas/tag-schema"; 
 import { genderEnum } from "@/shared/schemas/gender-schema";
 import { sexPrefsEnum } from "@/shared/schemas/sex_prefs-schema";
-import CustomButton from "@/shared/components/forms/SubmitButton";
+import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 import SelectFormInput from "@/shared/components/forms/SelectFormInput";
 import { TagsFormManager } from "@/shared/components/forms/TagsFormInput";
@@ -80,9 +80,9 @@ export default function ProfileForm ({ data, interests }: ProfileFormProps) {
         <LocationFormInput />
                 
         <div className="flex items-center justify-center">
-          <CustomButton type="submit" isPending={updateProfile.isPending}>
+          <CustomSubmitButton type="submit" isPending={updateProfile.isPending}>
             Update
-          </CustomButton>
+          </CustomSubmitButton>
         </div>
       </form>
     </FormProvider>

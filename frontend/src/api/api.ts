@@ -45,17 +45,14 @@ async function handleResponse<S extends z.ZodType>(
 export const api = {
   async request<S extends z.ZodType>(
     endpoint: string,
-    options: RequestInit & { schema: S,  },
+    options: RequestInit & { schema: S },
     retry: boolean = true
   ): Promise<z.infer<S>> {
     const { schema, ...fetchOptions } = options;
     
     let response = await fetch(`${BASE_URL}${endpoint}`, {
       ...fetchOptions,
-      headers: {
-        'Content-Type': 'application/json',
-        ...fetchOptions.headers
-      },
+      headers: {...fetchOptions.headers},
       credentials: "include"
     });
 
@@ -70,7 +67,6 @@ export const api = {
           // To do logout
         };
       };
-      // else?
     };
 
     return (handleResponse<S>(response, schema));
@@ -92,6 +88,9 @@ export const api = {
   ) => {
     return api.request(endpoint, {
       method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(body),
       schema: schema
     });
@@ -103,6 +102,9 @@ export const api = {
   ) => {
     return api.request(endpoint, {
       method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(body),
       schema: schema
     });
@@ -115,8 +117,18 @@ export const api = {
       method: "DELETE",
       schema: schema
     });
+  },  
+  uploadImages: async <S extends z.ZodType>(
+    endpoint: string,
+    formData: FormData,
+    schema: S
+  ) => {
+    return api.request(endpoint, {
+      method: "POST",
+      body: formData,
+      schema: schema
+    });
   },
-  // to do, upload for images
 };
 
 export const externApi = {

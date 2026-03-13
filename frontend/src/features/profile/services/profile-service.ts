@@ -13,10 +13,8 @@ export const profileApi = {
   updatePasswordProfile: (data: UpdatePasswordProfileType) => {
     return (api.patch("/users/me", data, z.void()));
   },
-  uploadImagesProfile: (files: File[]) => {
-    const fd = new FormData();
-    files.forEach((file) => fd.append("files", file));
-    // call post
+  uploadImagesProfile: (formData: FormData) => {
+    return (api.uploadImages("/users/me/images", formData, z.void()));
   },
   deleteImageProfile: (imageId: number) => {
     return (api.delete(`/users/me/images/${imageId}`, z.void() ));

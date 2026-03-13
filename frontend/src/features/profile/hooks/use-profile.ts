@@ -27,15 +27,30 @@ export const useProfile = () => {
   });
 
   const deleteImageProfileMutation = useMutation({
-    
+    mutationFn: profileApi.deleteImageProfile,
+    onSuccess: (res) => {
+      console.log(res);
+      // toast
+      // invalidate query
+    },
   });
 
   const setMainImageProfileMutation = useMutation({
-    
+    mutationFn: profileApi.setMainImageProfile,
+    onSuccess: (res) => {
+      console.log(res);
+      // toast
+      // invalidate query
+    }
   });
 
   const uploadImagesProfileMutation = useMutation({
-    
+    mutationFn: profileApi.uploadImagesProfile,
+    onSuccess: (res) => {
+      console.log(res);
+      // toast
+      // invalidate query
+    }
   });
 
   return ({
