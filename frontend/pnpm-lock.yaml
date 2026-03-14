@@ -6,6 +6,7 @@ settings:
 
 overrides:
   ajv: '>=8.18.0'
+  flatted: '>=3.4.0'
   minimatch: '>=10.2.1'
 
 importers:
