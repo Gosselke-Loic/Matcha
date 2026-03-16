@@ -41,7 +41,8 @@ export default function ProfileForm ({ data, interests }: ProfileFormProps) {
       sex_pref: sexPref.success ? sexPref.data : "bisexual",
       address: data.address || "",
       lat: data.lat || null,
-      lon: data.lon || null
+      lon: data.lon || null,
+      city: data.city
     },
     mode: "onTouched"
   });

@@ -40,7 +40,7 @@ export default function ImagePreview({
   }, [image]);
 
   return (
-    <div className={`grous relative aspect-square rounded-lg overflow-hidden border-2 transition-all
+    <div className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-all
       ${ isProfile ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200' }
       ${ error ? 'border-red-500' : 'border-gray-200' }`}
     >

@@ -9,16 +9,16 @@ import { genderEnum } from '@/shared/schemas/gender-schema';
 import { sexPrefsEnum } from '@/shared/schemas/sex_prefs-schema';
 
 const profileBaseSchema = z.object({
-  id: z.number().positive(),
+  id: z.number().int().positive(),
   username: z.string(),
   firstName: z.string(),
   lastName: z.string(),
   biography: z.string().nullable(),
   birthdayDate: z.coerce.date(),
-  fameRate: z.number().nullable(),
+  fameRate: z.number(),
   interests: tagsSchema,
   gender: z.string(),
-  address: z.string(),
+  city: z.string()
 });
 
 
@@ -30,6 +30,7 @@ export type ProfileData = z.infer<typeof profileSchema>;
 // Maybe lat and lon are not necessary, just address is enough
 export const ownProfileSchema = profileBaseSchema.extend({
   email: z.string(),
+  address: z.string(),
   lat: z.number(),
   lon: z.number(),
   sex_pref: z.string()
@@ -69,13 +70,19 @@ const validationOwnProfileSchema = z.object({
   lon: optionalZodType(
     z.number().min(-180).max(180)
   ),
+  city: optionalZodType(
+    z.string().min(1)
+  ),
   gender: genderEnum,
   sex_pref: sexPrefsEnum
 });
 export const updateOwnProfileSchema = validationOwnProfileSchema.partial().refine(
   (data) => {
     if (data.address && data.address.length > 0) {
-      return (data.lat !== undefined && data.lon !== undefined);
+      return (data.lat !== undefined
+        && data.lon !== undefined
+        && data.city !== undefined
+      );
     };
 
     return (true);

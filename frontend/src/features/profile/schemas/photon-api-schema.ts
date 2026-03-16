@@ -6,11 +6,8 @@ const featureSchema = z.object({
   }),
   properties: z.object({
     name: z.string(),
-    city: z.string().optional(),
-    postcode: z.string().optional(),
-    state: z.string().optional(),
-    country: z.string(),
-    type: z.enum(['house', 'street', 'city', 'district', 'locality'])
+    city: z.string(),
+    country: z.string()
   })
 });
 export type FeaturePhotonApiData = z.infer<typeof featureSchema>;

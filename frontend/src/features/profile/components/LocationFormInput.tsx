@@ -65,6 +65,7 @@ export const LocationFormInput = () => {
             setSearchTerm(e.target.value);
             setValue("lat", undefined);
             setValue("lon", undefined);
+            setValue("city", undefined);
           }}
           onFocus={() => setShowList(true)}
           placeholder="City or address..."
@@ -96,6 +97,7 @@ export const LocationFormInput = () => {
 
       <input type="hidden" {...register("lat")} />
       <input type="hidden" {...register("lon")} />
+      <input type="hidden" {...register("city")} /> 
     </div>
   );
 };

@@ -17,7 +17,7 @@ export const imagesFormSchema = z.object({
   images: z.array(
     z.union([
       z.instanceof(File)
-      .refine((file) => file.size <= MAX_FILE_SIZE, "File size 5mb maximum")
+      .refine((file) => file.size >= MAX_FILE_SIZE, "File size 5mb maximum")
       .refine((file) =>
         ACCEPTED_FILE_TYPES.includes(file.type), "Only .jpeg, .jpg, .png or .webp are supported"
       ),

@@ -10,7 +10,6 @@ import { externApi } from "@/api/api";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { locationQueryOptions } from "../services/location-options";
 
-// To do, find way to better type setValue keys form
 interface UseAddressSearchProps {
   setValue: UseFormSetValue<FieldValues>
 };
@@ -41,6 +40,7 @@ export const useAddressSearch = (
   const onSelectOption = (feature: FeaturePhotonApiData) => {
     const [lat, lon] = feature.geometry.coordinates;
     setValue('address', feature.properties.name, { shouldValidate: true });
+    setValue('city', feature.properties.city);
     setValue('lat', lat);
     setValue('lon', lon);
 
@@ -63,9 +63,10 @@ export const useAddressSearch = (
         if (data.features && data.features.length > 0) {
           const properties = data.features[0].properties;
 
-          setValue("address", properties.name, { shouldValidate: true });
-          setValue("lat", latitude);
-          setValue("lon", longitude);
+          setValue('address', properties.name, { shouldValidate: true });
+          setValue('city', properties.city);
+          setValue('lat', latitude);
+          setValue('lon', longitude);
 
           setSearchTerm(properties.name);
         };

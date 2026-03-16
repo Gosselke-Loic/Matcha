@@ -4,6 +4,7 @@ import type { Tags } from "@/shared/schemas/tag-schema";
 import { ProfilePasswordForm } from "./ProfilePasswordForm";  
 import type { OwnProfileData } from "../schemas/profile-schema";
 import type { ImagesProfileData } from "../schemas/images-schema";
+import { ProfileImageForm } from "./ProfileImagesForm";
 
 interface ProfileBaseFormProps {
   data: OwnProfileData;
@@ -15,7 +16,7 @@ interface ProfileBaseFormProps {
 const EMPTY_SET = new Set<string>();
 
 export function ProfileBaseForm (
-  { data, interests, commonWords }: ProfileBaseFormProps
+  { data, images, interests, commonWords }: ProfileBaseFormProps
 ) {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-4 md:p-8">
@@ -44,7 +45,7 @@ export function ProfileBaseForm (
         </section>
 
         <section>
-          { /* Images section */ }
+          <ProfileImageForm images={images} />
         </section>
 
         <section>
