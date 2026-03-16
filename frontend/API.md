@@ -341,7 +341,7 @@
 - **Body** :
 ```json
 {
-  "images": Array[{"id": "number", "filename": "string", "isPrimary": "boolean"}]
+  "images": "Array[{"id": "number", "filename": "string", "isPrimary": "boolean"}]"
 }
 ```
 
