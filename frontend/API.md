@@ -4,6 +4,19 @@
 
 ## Summary
 - [Authentication](#authentication)
+- [Profile](#profile)
+
+---
+
+> [!IMPORTANT]
+> ** 401 Unauthorized **: All requests with credentials can return a response with this status code.
+#### Status code error (401)
+  - **CODE** : `UNAUTHORIZED` or `TOKEN_EXPIRED`
+
+> ** 500 Internal server error **: All requests can return a response with this status code.  
+#### Status code error (500)
+  - **CODE** : `INTERNAL_ERROR`
+
 
 ## Authentication
 
@@ -27,6 +40,7 @@
   - Status code : `200`
   - Cookies : `Access and Refresh token`
 
+- **Body** :
 ```json
 {
   "id": "number",
@@ -57,9 +71,6 @@
   - **CODE** : `EMAIL_NOT_VERIFIED`
     > *Info :* Email not verified
 
-#### Status code error (500)
-  - **CODE** : `INTERNAL_ERROR`
-
 ---
 
 ### `POST /auth/logout`
@@ -88,9 +99,6 @@
 #### Status code error (401)
   - **CODE** : `UNAUTHORIZED`
     > *Info :* Missing credentials
-
-#### Status code error (500)
-  - **CODE** : `INTERNAL_ERROR`
 
 ---
 
@@ -131,9 +139,6 @@
   - **CODE** : `INVALID_FORMAT`
     > *Info :*  Some of the input are incorrect
 
-#### Status code error (500)
-  - **CODE** : `INTERNAL_ERROR`
-
 ---
 
 ### `POST /auth/forgot-password`
@@ -172,9 +177,6 @@
   - **CODE** : `NOT_FOUND`
     > *Info :* Email not found
 
-#### Status code error (500)
-  - **CODE** : `INTERNAL_ERROR`
-
 ---
 
 ### `POST /auth/reset-password`
@@ -209,9 +211,6 @@
 #### Status code error (400)
   - **CODE** : `INVALID_FORMAT`
     > *Info :*  Some of the input are incorrect
-
-#### Status code error (500)
-  - **CODE** : `INTERNAL_ERROR`
 
 ---
 
@@ -260,7 +259,94 @@
   - **CODE** : `CONFLIT`
     > *Info :*  Email already validated
 
-#### Status code error (500)
-  - **CODE** : `INTERNAL_ERROR`
+---
+
+## Profile
+
+### `GET /users/:userId`
+*Get user profile informations*
+
+#### Request
+  - Credentials : `True`
+  - Body : `No body`
+
+#### Response
+
+1. **OK** :
+  - Status code : `200`
+
+- **Body** :
+  > *Info :*  Base json structure
+```json
+{
+  "id": "number",
+  "username": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "biography": "string | null",
+  "birthdayDate": "Date",
+  "fameRate": "number",
+  "interests": "Array[{id: number, label: string}]",
+  "gender": "string",
+  "city": "string",
+}
+```
+
+#### Add this to base json structure if it is not the profile of the logged-in user 
+```json
+{
+  "lastSeen": "Date"
+}
+```
+
+#### Add this to base json structure if it is the profile of the logged-in user
+```json
+{
+  "email": "string",
+  "address": "string",
+  "lat": "number",
+  "lon": "number",
+  "ser_pref": "string" 
+}
+```
+
+2. **!OK** :
+
+```json
+{
+  "code": "string",
+  "message": "string" 
+}
+```
+
+#### Status code error (404)
+  - **CODE** : `NOT_FOUND`
+    > *Info :*  User not found
 
 ---
+
+### `GET /users/:userId/images`
+*Get images of the user profile*
+
+#### Request
+  - Credentials : `True`
+  - Body : `No body`
+
+#### Response
+
+1. **OK** :
+  - Status code : `200`
+
+- **Body** :
+  > *Info :*  Base json structure
+```json
+{
+  "id": "number",
+  "filename": "string",
+  "isPrimary": "boolean"
+}
+```
+
+#### Status code error (404)
+  - **CODE** : `NOT_FOUND`
+    > *Info :*  User not found
