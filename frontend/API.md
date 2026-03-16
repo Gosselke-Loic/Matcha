@@ -287,7 +287,7 @@
   "biography": "string | null",
   "birthdayDate": "Date",
   "fameRate": "number",
-  "interests": "Array[{id: number, label: string}]",
+  "interests": [{"id": "number", "label": "string"}],
   "gender": "string",
   "city": "string",
 }
@@ -341,7 +341,7 @@
 - **Body** :
 ```json
 {
-  "images": "Array[{"id": "number", "filename": "string", "isPrimary": "boolean"}]"
+  "images": [{"id": "number", "filename": "string", "isPrimary": "boolean"}]
 }
 ```
 
