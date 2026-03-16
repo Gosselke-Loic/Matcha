@@ -64,7 +64,7 @@ function ProfileComponent() {
     <div className='min-h-screen flex items-center justify-center bg-slate-50'>
       {('interests' in profile) ? (
         <ProfileBaseForm
-          images={images}
+          dataImages={images}
           data={profile.user}
           commonWords={commonWords}
           interests={profile.interests}

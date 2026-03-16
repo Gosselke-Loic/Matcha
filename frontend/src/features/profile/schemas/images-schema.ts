@@ -10,7 +10,9 @@ const imageSchema = z.object({
 });
 export type ImageData = z.infer<typeof imageSchema>;
 
-export const imagesProfileSchema = z.array(imageSchema);
+export const imagesProfileSchema = z.object({
+  images: z.array(imageSchema)
+});
 export type ImagesProfileData = z.infer<typeof imagesProfileSchema>;
 
 export const imagesFormSchema = z.object({

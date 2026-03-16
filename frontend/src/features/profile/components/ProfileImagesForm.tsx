@@ -12,17 +12,17 @@ import { useProfile } from "../hooks/use-profile";
 import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
 
 interface ProfileImagesFormProps {
-  images: ImagesProfileData;
+  dataImages: ImagesProfileData;
 };
 
-export function ProfileImageForm ({ images }: ProfileImagesFormProps) {
+export function ProfileImageForm ({ dataImages }: ProfileImagesFormProps) {
   const {
     control,
     handleSubmit,
     formState: { errors }
   } = useForm({
     resolver: zodResolver(imagesFormSchema),
-    defaultValues: { images: images || [] },
+    defaultValues: { images: dataImages.images || [] },
     mode: "onTouched"
   });
   const { deleteImage, setMainImage, uploadImages } = useProfile();

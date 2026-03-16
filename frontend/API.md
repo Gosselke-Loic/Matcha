@@ -13,6 +13,7 @@
 #### Status code error (401)
   - **CODE** : `UNAUTHORIZED` or `TOKEN_EXPIRED`
 
+> [!IMPORTANT]
 > ** 500 Internal server error **: All requests can return a response with this status code.  
 #### Status code error (500)
   - **CODE** : `INTERNAL_ERROR`
@@ -306,7 +307,7 @@
   "address": "string",
   "lat": "number",
   "lon": "number",
-  "ser_pref": "string" 
+  "sex_pref": "string" 
 }
 ```
 
@@ -338,12 +339,9 @@
   - Status code : `200`
 
 - **Body** :
-  > *Info :*  Base json structure
 ```json
 {
-  "id": "number",
-  "filename": "string",
-  "isPrimary": "boolean"
+  "images": Array[{"id": "number", "filename": "string", "isPrimary": "boolean"}]
 }
 ```
 

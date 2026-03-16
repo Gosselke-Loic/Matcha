@@ -8,7 +8,7 @@ import { ProfileImageForm } from "./ProfileImagesForm";
 
 interface ProfileBaseFormProps {
   data: OwnProfileData;
-  images: ImagesProfileData;
+  dataImages: ImagesProfileData;
   interests: Tags;
   commonWords: Set<string> | undefined;
 };
@@ -16,7 +16,7 @@ interface ProfileBaseFormProps {
 const EMPTY_SET = new Set<string>();
 
 export function ProfileBaseForm (
-  { data, images, interests, commonWords }: ProfileBaseFormProps
+  { data, dataImages, interests, commonWords }: ProfileBaseFormProps
 ) {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-4 md:p-8">
@@ -45,7 +45,7 @@ export function ProfileBaseForm (
         </section>
 
         <section>
-          <ProfileImageForm images={images} />
+          <ProfileImageForm dataImages={dataImages} />
         </section>
 
         <section>
