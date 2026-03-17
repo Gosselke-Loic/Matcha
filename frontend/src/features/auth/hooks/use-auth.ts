@@ -1,14 +1,10 @@
-import { useNavigate } from '@tanstack/react-router';
 import { useMutation , useQueryClient } from '@tanstack/react-query';
 
 import { authApi } from '../services/auth-service';
-import { useAuthStore } from '../store/auth-store';
+import { authMeOptions } from '../services/auth-options'; 
 
 export const useAuth = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const setUser = useAuthStore((state) => state.setAuth);
-  const logoutUser = useAuthStore((state) => state.logout);
 
   const registerMutation = useMutation({
     mutationFn: authApi.register,
@@ -27,8 +23,10 @@ export const useAuth = () => {
   const loginMutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
-      setUser(data);
-      //navigate({ to: "/" }); Better navigate on loginForm
+      // The first one makes it possible to see the data immediatly
+      queryClient.setQueryData(authMeOptions.queryKey, data);
+      // Second for security and test token
+      queryClient.invalidateQueries({ queryKey: authMeOptions.queryKey });
     },
     onError: (error) => {
       console.error("loginMutation error: ", error.message);
@@ -40,10 +38,9 @@ export const useAuth = () => {
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSettled: () => {
-      logoutUser();
       queryClient.clear();
       // toast success
-      navigate({ to: "/login" });
+      // navigate({ to: "/login" }); call navigate in the component
     }
   });
 
@@ -51,7 +48,7 @@ export const useAuth = () => {
     mutationFn: authApi.forgotPassword,
     onSettled: () => {
       // toast success
-      navigate({ to: '/login' }) // Provisoire
+      // navigate({ to: '/login' }) call navigate in the component
     }
   });
   
@@ -59,7 +56,7 @@ export const useAuth = () => {
     mutationFn: authApi.resetPassword,
     onSuccess: () => {
       // toast success
-      navigate({ to: '/login' });
+      // navigate({ to: '/login' }); call navigate in the component
     }
   });
 

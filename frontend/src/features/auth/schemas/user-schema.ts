@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const userSchema = z.object({
   id: z.number().positive(),
   username: z.string(),
-  is_complete: z.boolean(),
-  // To do primary photo
+  isComplete: z.boolean(),
+  profilePhoto: z.string()
 });
 export type UserData = z.infer<typeof userSchema>;

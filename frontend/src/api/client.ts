@@ -3,7 +3,6 @@ import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 
 import { router } from "@/main"; 
 import ApiError from "./ApiError";
-import { useAuthStore } from "@/features/auth/store/auth-store";
 
 function parseErrorMessage(error: unknown): string {
   if (error instanceof ApiError) return error.message;
@@ -13,7 +12,6 @@ function parseErrorMessage(error: unknown): string {
 };
 
 const clearSession = (queryClient: QueryClient) => {
-  useAuthStore.getState().setUnauth();
   queryClient.clear();
   if (router.state.location.pathname === '/login') {
     router.navigate({ to: '/login', replace: true });

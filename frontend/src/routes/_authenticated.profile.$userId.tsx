@@ -5,6 +5,7 @@ import { createFileRoute, notFound, redirect } from '@tanstack/react-router';
 import ApiError from '@/api/ApiError';
 import { commonWordsOptions } from '@/api/common-queries';
 import { Profile } from '@/features/profile/components/Profile';
+import { authMeOptions } from '@/features/auth/services/auth-options';
 import { ProfileBaseForm } from '@/features/profile/components/ProfileBaseForm';
 import { profileImagesQueryOptions, profileQueryOptions } from '@/features/profile/services/profile-options';
 
@@ -19,19 +20,20 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
       userId: ProfileParamsSchema.parse(params.userId)
     }),
   },
-  beforeLoad: ({ context, location }) => {
-    const { isAuthenticated } = context.authStore.getState();
+  beforeLoad: async ({ context: { queryClient }, location }) => {
+    const user = await queryClient.ensureQueryData(authMeOptions); 
 
-    if (!isAuthenticated) {
+    if (!user) {
       throw redirect({
         to: '/login',
         search: { redirect: location.href }
       });
     };
   },
-  loader: async ({ context: { authStore, queryClient }, params: { userId } }) => {
-    const isOwner = authStore.getState().user?.id === userId; 
-
+  loader: async ({ context: { queryClient }, params: { userId } }) => {
+    const user = await queryClient.ensureQueryData(authMeOptions);
+     
+    const isOwner = user.id === userId;
     try {
       await Promise.all([
         queryClient.ensureQueryData(profileQueryOptions(userId, isOwner)),
@@ -51,9 +53,8 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
 
 function ProfileComponent() {
   const { userId } = Route.useParams();
-  const { authStore } = Route.useRouteContext();
 
-  const user = authStore((state) => state.user); 
+  const { data: user } = useQuery(authMeOptions); 
   const isOwner = user?.id === userId;
 
   const { data: images } = useSuspenseQuery(profileImagesQueryOptions(userId));

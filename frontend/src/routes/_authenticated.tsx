@@ -10,15 +10,16 @@ import { authMeOptions } from "@/features/auth/services/auth-options";
 import PageTransition from "@shared/components/transition/PageTransition";
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: async ({ context, location }) => {
-    const { queryClient, authStore } = context;
-    const { setAuth } = authStore.getState();
-
+  beforeLoad: async ({ context: { queryClient }, location }) => {
     try {
-      const data = await queryClient.ensureQueryData(authMeOptions);
-      setAuth(data);
+      const user = await queryClient.ensureQueryData(authMeOptions);
 
-      return (data);
+      if (!user) {        
+        throw redirect({
+          to: '/login',
+          search: { redirect: location.href }
+        });
+      };
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         throw redirect({

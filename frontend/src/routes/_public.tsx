@@ -6,19 +6,21 @@ import {
 
 import PublicSpinner from "@shared/components/spinner/PublicSpinner";
 import { GeneralError } from "@shared/components/errors/GeneralError";
+import { authMeOptions } from "@/features/auth/services/auth-options";
 import PageTransition from "@shared/components/transition/PageTransition";
 
 export const Route = createFileRoute('/_public')({
-  beforeLoad: async ({ context }) => {
-    const { authStore } = context;
-    const { isAuthenticated } = authStore.getState();
+  beforeLoad: async ({ context: { queryClient } }) => {
+    const user = await queryClient
+      .ensureQueryData(authMeOptions)
+      .catch(() => null);
 
-    if ( isAuthenticated ) {
+    if (user) {
       throw redirect({
         to: '/',
         replace: true
       });
-    }
+    };
   },
   errorComponent: GeneralError,
   pendingComponent: PublicSpinner,

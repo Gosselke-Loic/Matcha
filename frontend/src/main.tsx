@@ -6,14 +6,10 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import './index.css';
 import { queryClient } from './api/client'; 
 import { routeTree } from './routeTree.gen';
-import { useAuthStore } from '@features/auth/store/auth-store';
 
 export const router = createRouter({
   routeTree,
-  context: {
-    queryClient: undefined!,
-    authStore: undefined!
-  }
+  context: { queryClient: undefined! }
 });
 
 declare module '@tanstack/react-router' {
@@ -27,7 +23,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <RouterProvider
         router={router}
-        context={{ queryClient: queryClient, authStore: useAuthStore }}
+        context={{ queryClient: queryClient }}
       />
     </QueryClientProvider>
   )
