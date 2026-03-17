@@ -135,5 +135,6 @@ class UserPhoto(db.Model):
     id = db.Column(Integer, primary_key=True)
     user_id = db.Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     url = db.Column(Text, nullable=False)
+    is_primary = db.Column(Boolean, default=False, nullable=False)
 
     user = db.relationship("User", back_populates="photos")
