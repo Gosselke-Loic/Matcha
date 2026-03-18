@@ -1,59 +1,93 @@
-import type { ChangeEvent } from "react"; 
+import { useEffect, type ChangeEvent } from "react"; 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 
 import {
-  imagesFormSchema,
-  type ImagesFormData,
-  type ImagesProfileData
+  imagesFormArraySchema,
+  type ImagesProfileData,
+  type ImageFormArrayData
 } from "../schemas/images-schema";
 import ImagePreview from "./ImagePreview";
 import { useProfile } from "../hooks/use-profile";
 import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
 
 interface ProfileImagesFormProps {
+  userId: number;
   dataImages: ImagesProfileData;
 };
 
-export function ProfileImageForm ({ dataImages }: ProfileImagesFormProps) {
+export function ProfileImageForm ({ dataImages, userId }: ProfileImagesFormProps) {
   const {
+    reset,
     control,
     handleSubmit,
     formState: { errors }
   } = useForm({
-    resolver: zodResolver(imagesFormSchema),
-    defaultValues: { images: dataImages.images || [] },
+    resolver: zodResolver(imagesFormArraySchema),
+    defaultValues: { images: [] },
     mode: "onTouched"
   });
-  const { deleteImage, setMainImage, uploadImages } = useProfile();
-  const { fields, append, remove } = useFieldArray({ control, name: "images", keyName: "rhf_id" });
+
+  useEffect(() => {
+    if (dataImages.images) {
+      reset({
+        images: dataImages.images.map((image) => ({
+          id: image.id,
+          filename: image.filename,
+          isPrimary: image.isPrimary,
+          isLocal: false
+        }))
+      });
+    };
+  }, [dataImages, reset]);
 
   const error = errors["root"];
+  const { fields, append, remove, update }
+    = useFieldArray({ control, name: "images", keyName: "rhf_id"});
+  const { deleteImage, setMainImage, uploadImages } = useProfile();
 
-  const handleMainImage = (id: number) => {
-    setMainImage.mutate(id);
+  const handleMainImage = (id: number, isLocal: boolean, index: number) => {
+    if (isLocal) {
+      // toast
+      return ;
+    };
+
+    setMainImage.mutate(id, {
+      onSuccess: () => {
+        fields.forEach((field, i) => {
+          if (field.isPrimary) { update(i, { ...field, isPrimary: false }); };
+        });
+
+        update(index, { ...fields[index], isPrimary: true });
+      }
+    });
   };
 
-  const handleDelete = (index: number, id: number) => {
-    if (id) {
-      deleteImage.mutate(id);
-    };
-    remove(index);
+  const handleDelete = (id: number, index: number) => {
+    deleteImage.mutate(id, {
+      onSuccess: () => { remove(index) }
+    });
   };
 
   const onUpload = (ev: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(ev.target.files || []);
-    files.forEach((file) => append(file));
+    files.forEach((file) => append({
+      id: -1,
+      file: file,
+      filename: "",
+      isLocal: true,
+      isPrimary: false
+    }));
     ev.target.value = "";
   };
 
-  const onSubmit = (data: ImagesFormData) => {
+  const onSubmit = (data: ImageFormArrayData) => {
     const fd = new FormData();
     data.images.forEach((img) => {
-      if (img instanceof File) fd.append('files', img);
+      if (img.isLocal) { fd.append('files', img.file); };
     });
 
-    uploadImages.mutate(fd); // onSuccess local needed?
+    uploadImages.mutate({ userId, ...fd });
   };
 
   return (
@@ -65,10 +99,12 @@ export function ProfileImageForm ({ dataImages }: ProfileImagesFormProps) {
           <ImagePreview
             key={field.rhf_id}
             image={field}
-            setAsProfile={(id: number) => handleMainImage(id)}
+            setAsProfile={() =>
+              handleMainImage(field.id, field.isLocal, index)
+            }
             onDelete={() => {
               if (!(field instanceof File)) {
-                handleDelete(index, field.id);
+                handleDelete(field.id, index);
               } else {
                 remove(index);
               };

@@ -1,9 +1,10 @@
 import { useMemo } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import { FormProvider, useForm } from "react-hook-form";  
 
 import {
-  type profilePasswordFormData,
+  type ProfilePasswordFormData,
   createProfilePasswordFormSchema
 } from "../schemas/password-schema";
 import { useProfile } from "../hooks/use-profile";
@@ -15,6 +16,7 @@ interface ProfilePasswordFormProps {
 };
 
 export function ProfilePasswordForm({ commonWords }: ProfilePasswordFormProps) {
+  const navigate = useNavigate();
   const { updatePasswordProfile } = useProfile();
 
   const schema = useMemo(
@@ -31,10 +33,11 @@ export function ProfilePasswordForm({ commonWords }: ProfilePasswordFormProps) {
     mode: "onTouched"
   });
 
-  const onSubmit = (data: profilePasswordFormData) => {
+  const onSubmit = (data: ProfilePasswordFormData) => {
     updatePasswordProfile.mutate(data, {
-      // can add custom handle onSuccess or onError
-      // navigate to login 
+      onSuccess: () => {
+        navigate({ to: "/login", replace: true });
+      }
     });
   };
 

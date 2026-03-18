@@ -8,25 +8,32 @@ const imageSchema = z.object({
   filename: z.string(),
   isPrimary: z.boolean()
 });
-export type ImageData = z.infer<typeof imageSchema>;
+export type ImageValues = z.infer<typeof imageSchema>;
 
 export const imagesProfileSchema = z.object({
   images: z.array(imageSchema)
 });
 export type ImagesProfileData = z.infer<typeof imagesProfileSchema>;
 
-export const imagesFormSchema = z.object({
-  images: z.array(
-    z.union([
-      z.instanceof(File)
+
+const imageFormSchema = z.discriminatedUnion('isLocal', [
+  imageSchema.extend({
+   isLocal: z.literal(false) 
+  }),
+  imageSchema.extend({
+    isLocal: z.literal(true),
+    file: z.instanceof(File)
       .refine((file) => file.size >= MAX_FILE_SIZE, "File size 5mb maximum")
       .refine((file) =>
         ACCEPTED_FILE_TYPES.includes(file.type), "Only .jpeg, .jpg, .png or .webp are supported"
       ),
-      imageSchema
-    ])
-  )
-  .min(5, "5 images at least are required")
-  .max(8, "8 images maximum")
+  })
+]);
+export type ImageFormData = z.infer<typeof imageFormSchema>;
+
+export const imagesFormArraySchema = z.object({
+  images: z.array(imageFormSchema)
+    .min(5, "5 images at least are required")
+    .max(8, "8 images maximum")
 });
-export type ImagesFormData = z.infer<typeof imagesFormSchema>;
+export type ImageFormArrayData = z.infer<typeof imagesFormArraySchema>;

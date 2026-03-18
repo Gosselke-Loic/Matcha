@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { useSuspenseQuery, useQuery } from '@tanstack/react-query';
-import { createFileRoute, notFound, redirect } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import ApiError from '@/api/ApiError';
 import { commonWordsOptions } from '@/api/common-queries';
@@ -19,16 +19,6 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
     parse: (params) => ({
       userId: ProfileParamsSchema.parse(params.userId)
     }),
-  },
-  beforeLoad: async ({ context: { queryClient }, location }) => {
-    const user = await queryClient.ensureQueryData(authMeOptions); 
-
-    if (!user) {
-      throw redirect({
-        to: '/login',
-        search: { redirect: location.href }
-      });
-    };
   },
   loader: async ({ context: { queryClient }, params: { userId } }) => {
     const user = await queryClient.ensureQueryData(authMeOptions);

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-import type { ImageData } from "../schemas/images-schema";
+import type { ImageFormData } from "../schemas/images-schema";
 
 const UPLOADS_URL = ""; // To do, fill with correct path for shared folder
 
 interface ImagePreviewProps {
-  image: File | ImageData;
+  image: ImageFormData;
   onDelete: () => void;
-  setAsProfile: (id: number) => void;
+  setAsProfile: () => void;
   error?: string;
 };
 
@@ -25,8 +25,8 @@ export default function ImagePreview({
   useEffect(() => {
     let objectUrl = "";
 
-    if (image instanceof File) {
-      objectUrl = URL.createObjectURL(image);
+    if (image.isLocal) {
+      objectUrl = URL.createObjectURL(image.file);
       setPreviewUrl(objectUrl);
     } else {
       setPreviewUrl(`${UPLOADS_URL}/${image.filename}`);
@@ -56,7 +56,7 @@ export default function ImagePreview({
         {isExistingImage && !isProfile && (
           <button
             type="button"
-            onClick={() => setAsProfile(image.id)}
+            onClick={() => setAsProfile()}
             className="bg-white text-gray-900 text-[10px] font-bold px-2 py-1 rounded hover:bg-blue-50 transition-colors uppercase tracking-wider"
           >
             Set as profile image
@@ -68,14 +68,16 @@ export default function ImagePreview({
             Profile image
           </span>
         )}
-        
-        <button
-          type="button"
-          onClick={onDelete}
-          className="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase hover:bg-red-700 transition-colors"
-        >
-          Remove
-        </button>
+
+        {!isProfile && (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase hover:bg-red-700 transition-colors"
+          >
+            Remove
+          </button>
+        )}
       </div>
 
       {error && (

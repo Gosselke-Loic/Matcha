@@ -21,7 +21,7 @@ export const getPasswordFields = ( commonWords: Set<string> ) => ({
 export const optionalZodType = <S extends z.ZodType>(schema: S) =>
   z.preprocess((val) => {
     if (val === "" || val === null || val === undefined) {
-      return undefined
+      return (undefined);
     };
 
     if (schema instanceof z.ZodNumber && typeof val === "string") {

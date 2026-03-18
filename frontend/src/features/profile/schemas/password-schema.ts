@@ -11,4 +11,4 @@ export const createProfilePasswordFormSchema = (commonWords: Set<string>) =>
     path: ['confirmPassword']
   });
 type ProfilePasswordFormValues = ReturnType<typeof createProfilePasswordFormSchema>;
-export type profilePasswordFormData = z.infer<ProfilePasswordFormValues>;
+export type ProfilePasswordFormData = z.infer<ProfilePasswordFormValues>;

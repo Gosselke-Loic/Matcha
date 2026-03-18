@@ -45,7 +45,7 @@ export function ProfileBaseForm (
         </section>
 
         <section>
-          <ProfileImageForm dataImages={dataImages} />
+          <ProfileImageForm dataImages={dataImages} userId={data.id} />
         </section>
 
         <section>

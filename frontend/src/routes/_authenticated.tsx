@@ -5,6 +5,8 @@ import {
 } from "@tanstack/react-router";
 
 import ApiError from "@/api/ApiError";
+import Navbar from "@/shared/components/layouts/Navbar";
+import Footer from "@/shared/components/layouts/Footer";
 import { GeneralError } from "@shared/components/errors/GeneralError";
 import { authMeOptions } from "@/features/auth/services/auth-options";
 import PageTransition from "@shared/components/transition/PageTransition";
@@ -36,18 +38,20 @@ export const Route = createFileRoute('/_authenticated')({
   errorComponent: GeneralError,
   component: () => (
     <>
-      <nav></nav>
+      <Navbar />
       <PageTransition>
         <Outlet />
       </PageTransition>
+      <Footer />
     </>
   ),
   notFoundComponent: () => {
     <>
-      <nav></nav>
+      <Navbar />
       <div className='min-h-screen flex items-center justify-center bg-slate-50'>
         { /* Not Found component */ }
       </div>
+      <Footer />
     </>
   }
 });

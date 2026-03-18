@@ -1,19 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useAuth } from "@/features/auth/hooks/use-auth";
 import { profileApi } from "../services/profile-service";
-import { authMeOptions } from "@/features/auth/services/auth-options";
+import type { UpdateOwnProfileData } from "../schemas/profile-schema";
+import { authMeKeys, profileImagesKeys, profileKeys } from "@/shared/constants/query-keys";
 
 export const useProfile = () => {
-  const { logout } = useAuth();
   const queryClient = useQueryClient();
 
   const updateProfileMutation = useMutation({
-    mutationFn: profileApi.updateProfile,
-    onSuccess: (res) => {
+    mutationFn: (data: UpdateOwnProfileData & { userId: number }) => {
+      const { userId, ...payload } = data;
+      return (profileApi.updateProfile(payload));
+    },
+    onSuccess: (res, variables) => {
+      const { userId } = variables;
       console.log(res);
       // toast
-      queryClient.invalidateQueries({ queryKey: authMeOptions.queryKey });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail(userId) });
+      queryClient.invalidateQueries({ queryKey: authMeKeys.all });
     }
   });
 
@@ -21,8 +25,8 @@ export const useProfile = () => {
     mutationFn: profileApi.updatePasswordProfile,
     onSuccess: (res) => {
       console.log(res);
+      queryClient.clear();
       // toast
-      logout.mutate();
     }
   });
 
@@ -31,7 +35,6 @@ export const useProfile = () => {
     onSuccess: (res) => {
       console.log(res);
       // toast
-      // invalidate query
     },
   });
 
@@ -40,16 +43,22 @@ export const useProfile = () => {
     onSuccess: (res) => {
       console.log(res);
       // toast
-      // invalidate query
+      // invalidate query profile
+      queryClient.invalidateQueries({ queryKey: authMeKeys.all });
     }
   });
 
   const uploadImagesProfileMutation = useMutation({
-    mutationFn: profileApi.uploadImagesProfile,
-    onSuccess: (res) => {
+    mutationFn: (data: FormData & { userId: number }) => {
+      const { userId, ...payload } = data;
+      return (profileApi.uploadImagesProfile(payload));
+    },
+    onSuccess: (res, variables) => {
+      const { userId } = variables;
       console.log(res);
       // toast
-      // invalidate query
+      queryClient.invalidateQueries({ queryKey: profileImagesKeys.detail(userId) });
+      queryClient.invalidateQueries({ queryKey: authMeKeys.all });
     }
   });
 

@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 
-import { useAddressSearch } from "../hooks/useAddressSearch";
+import { useAddressSearch } from "../hooks/use-address-search";
 
 export const LocationFormInput = () => {  
   const {

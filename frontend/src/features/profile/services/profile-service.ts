@@ -1,13 +1,12 @@
 import { z } from "zod";
 import { api } from "@/api/api";
-import { updateOwnProfileSchema } from "../schemas/profile-schema";
-import type { profilePasswordFormData } from "../schemas/password-schema";
+import type { UpdateOwnProfileData } from "../schemas/profile-schema";
+import type { ProfilePasswordFormData } from "../schemas/password-schema";
 
-type UpdateOwnProfileType = z.infer<typeof updateOwnProfileSchema>;
-type UpdatePasswordProfileType = Omit<profilePasswordFormData, "confirmPassword">;
+type UpdatePasswordProfileType = Omit<ProfilePasswordFormData, "confirmPassword">;
 
 export const profileApi = {
-  updateProfile : (data: UpdateOwnProfileType) => {
+  updateProfile : (data: UpdateOwnProfileData) => {
     return (api.patch("/users/me", data, z.void()));
   },
   updatePasswordProfile: (data: UpdatePasswordProfileType) => {

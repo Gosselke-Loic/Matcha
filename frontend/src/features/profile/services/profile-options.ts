@@ -8,6 +8,7 @@ import {
 } from "../schemas/profile-schema";
 import { tagsSchema } from "@/shared/schemas/tag-schema";
 import { imagesProfileSchema } from "../schemas/images-schema";
+import { profileImagesKeys, profileKeys } from "@/shared/constants/query-keys";
 
 const ownProfileResponseSchema = z.object({
   interests: tagsSchema,
@@ -22,7 +23,7 @@ export const profileQueryOptions = (
   userId: number,
   isOwner: boolean
 ) => queryOptions({
-  queryKey: ['profile', userId, { isOwner }],
+  queryKey: profileKeys.detail(userId),
   queryFn: async ()  => {
     if (isOwner) {
       return (api.get(`/users/${userId}`, ownProfileResponseSchema));
@@ -38,7 +39,7 @@ export const profileQueryOptions = (
 export const profileImagesQueryOptions = (
   userId: number
 ) => queryOptions({
-  queryKey: ['profile', 'images', userId],
+  queryKey: profileImagesKeys.detail(userId),
   queryFn: async () => api.get(`/users/${userId}/images`, imagesProfileSchema),
   placeholderData: keepPreviousData,
   staleTime: 1000 * 60 * 5,

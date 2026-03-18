@@ -5,7 +5,6 @@ interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 };
 
-// Maybe need a spinner for email validating from backend
 export default function CustomFormInput (
   { name, label, type = "text", ...props }: FormInputProps
 ) {

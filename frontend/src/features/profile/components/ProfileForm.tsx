@@ -47,8 +47,8 @@ export default function ProfileForm ({ data, interests }: ProfileFormProps) {
     mode: "onTouched"
   });
 
-  const onSubmit = (data: UpdateOwnProfileData) => {
-    updateProfile.mutate(data, {
+  const onSubmit = (formData: UpdateOwnProfileData) => {
+    updateProfile.mutate({ userId: data.id, ...formData }, {
       // can add custom handle onSuccess or onError
     });
   };
