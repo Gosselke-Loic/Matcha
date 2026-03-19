@@ -1,6 +1,6 @@
 import secrets, hashlib
 from datetime import datetime, timedelta, timezone
-from flask import Blueprint, jsonify, request, current_app, url_for
+from flask import Blueprint, jsonify, request, current_app, url_for, make_response
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
     decode_token, jwt_required, get_jwt, get_jwt_identity,
@@ -65,7 +65,7 @@ def issue_password_reset_token(user):
     return url_for("auth.password_reset_confirm", token=raw, _external=True)
 
 
-@bp.route("/signup", methods=["POST"])
+@bp.route("/register", methods=["POST"])
 def signup():
     data = request.get_json() or {}
     username = data.get("username")
@@ -104,7 +104,7 @@ def signup():
     confirm_url = url_for("auth.confirm_email", token=token, _external=True)
     send_confirmation_email(user.email, confirm_url, user.first_name)
 
-    return jsonify(msg="User created. Please check your email to confirm."), 201
+    return jsonify(msg="User created. Please check your email to confirm."), 204
 
 
 @bp.route("/confirm/<token>", methods=["GET"])
@@ -123,7 +123,7 @@ def confirm_email(token):
     return jsonify(msg="Email confirmed, account activated"), 200
 
 
-@bp.route("/password-reset/request", methods=["POST"])
+@bp.route("/forgot-password", methods=["POST"])
 def request_password_reset():
     data = request.get_json() or {}
     email = (data.get("email") or "").strip().lower()
@@ -138,7 +138,7 @@ def request_password_reset():
     return jsonify(msg="User not found"), 404
 
 
-@bp.route("/password-reset/confirm", methods=["POST"])
+@bp.route("/reset-password", methods=["POST"])
 def password_reset_confirm():
     data = request.get_json() or {}
     raw = data.get("token")
@@ -181,7 +181,7 @@ def login():
     refresh_jti = decode_token(refresh)["jti"]
     store_refresh_token(refresh_jti, user.id, current_app.config["JWT_REFRESH_TOKEN_EXPIRES"])
 
-    resp = jsonify(id=user.id, username=user.username)
+    resp = jsonify(id=user.id, username=user.username, isComplete=True, profileImage="")
     set_access_cookies(resp, access)
     set_refresh_cookies(resp, refresh)
     return resp
@@ -214,7 +214,7 @@ def refresh():
 def logout():
     jti = get_jwt()["jti"]
     revoke_refresh_token(jti)
-    resp = jsonify(msg="Logged out")
+    resp = make_response('', 204)
     unset_jwt_cookies(resp)
     return resp
 
@@ -241,7 +241,7 @@ def get_user_info():
 @jwt.unauthorized_loader
 def custom_missing_token_message(callback):
     # called when no JWT is present
-    return jsonify({"msg": "Authentication required: no token provided"}), 401
+    return jsonify({"code": "UNAUTHORIZED", "message": "Missing credentials"}), 401
 
 
 @jwt.invalid_token_loader
