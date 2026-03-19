@@ -10,25 +10,35 @@ from .security import verify_password, hash_password
 bp = Blueprint("profiles", __name__)
 
 
-def public_user_payload(user: User):
+def base_user_payload(user: User):
     return {
         "id": user.id,
         "username": user.username,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "fame_rate": user.fame_rate,
+        "firstName": user.first_name,
+        "lastName": user.last_name,
         "biography": user.biography,
+        "birthday_date": user.birthday_date.isoformat(),
+        "fameRate": user.fame_rate,
+        "interests": user.interests_cache,
+        "gender": user.gender.value,
+        "city": user.city
     }
 
 
+def public_user_payload(user: User):
+	payload = base_user_payload(user)
+	payload.update({
+        "lastSeen": user.last_seen
+	})
+
 def private_user_payload(user: User):
-    payload = public_user_payload(user)
+    payload = base_user_payload(user)
     payload.update({
         "email": user.email,
-        "birthday_date": user.birthday_date.isoformat() if user.birthday_date else None,
-        "sex_pref": user.sex_pref.value if hasattr(user.sex_pref, "value") else user.sex_pref,
-        "gender": user.gender.value if hasattr(user.gender, "value") else user.gender,
-        "interests_cache": user.interests_cache,
+        "address": user.address,
+        "lat": user.lat,
+        "lon": user.lon,
+        "sex_pref": user.sex_pref.value
     })
     return payload
 
@@ -197,3 +207,19 @@ def set_main_image(image_id: int):
     db.session.add(target)
     db.session.commit()
     return ("", 204)
+
+
+@bp.route("/<int:user_id>/images", methods=["GET"])
+@jwt_required()
+def get_user_images(user_id: int):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"code": "NOT_FOUND", "message": "User not found"}), 404
+
+    photos = UserPhoto.query.filter_by(user_id=user.id).all()
+    images = []
+    for p in photos:
+        filename = os.path.basename(p.url)
+        images.append({"id": p.id, "filename": filename, "isPrimary": bool(p.is_primary)})
+
+    return jsonify(images=images), 200
