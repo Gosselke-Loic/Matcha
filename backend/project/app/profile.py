@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_req
 from werkzeug.utils import secure_filename
 import os, time
 
-from .models import db, User, UserPhoto, RefreshToken
+from .models import db, User, UserPhoto, RefreshToken, Interest
 from .security import verify_password, hash_password
 
 
@@ -17,19 +17,21 @@ def base_user_payload(user: User):
         "firstName": user.first_name,
         "lastName": user.last_name,
         "biography": user.biography,
-        "birthday_date": user.birthday_date.isoformat(),
+        "birthdayDate": user.birthday_date.isoformat(),
         "fameRate": user.fame_rate,
-        "interests": user.interests_cache,
+        "interests": [],
         "gender": user.gender.value,
         "city": user.city
     }
 
 
 def public_user_payload(user: User):
-	payload = base_user_payload(user)
-	payload.update({
-        "lastSeen": user.last_seen
-	})
+    payload = base_user_payload(user)
+    payload.update({
+        "lastSeen": user.last_seen.isoformat() if user.last_seen is not None else None
+    })
+    return payload
+
 
 def private_user_payload(user: User):
     payload = base_user_payload(user)
@@ -50,12 +52,26 @@ def get_profile(user_id: int):
 
     user = User.query.get(user_id)
     if not user:
-        return jsonify(msg="User not found"), 404
+        return jsonify({"code": "NOT_FOUND", "message": "User not found"}), 404
 
     if int(current) == int(user_id):
-        return jsonify(private_user_payload(user)), 200
+        ids = user.interests_cache or []
+        if ids:
+            interests = Interest.query.filter(Interest.id.in_(ids)).all()
+            payload = private_user_payload(user)
+            payload["interests"] = [{"id": i.id, "label": i.name} for i in interests]
+        else:
+            payload = private_user_payload(user)
+        return jsonify(payload), 200
 
-    return jsonify(public_user_payload(user)), 200
+    ids = user.interests_cache or []
+    if ids:
+        interests = Interest.query.filter(Interest.id.in_(ids)).all()
+        payload = public_user_payload(user)
+        payload["interests"] = [{"id": i.id, "label": i.name} for i in interests]
+    else:
+        payload = public_user_payload(user)
+    return jsonify(payload), 200
 
 
 @bp.route("/me", methods=["GET"])

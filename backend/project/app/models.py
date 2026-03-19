@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
     Column, Integer, SmallInteger, String, Text, Date, Boolean,
-    TIMESTAMP, ForeignKey, UniqueConstraint, Index, ARRAY, text
+    TIMESTAMP, ForeignKey, UniqueConstraint, Index, ARRAY, text, Float
 )
 from sqlalchemy.dialects.postgresql import ENUM as PG_ENUM
 from geoalchemy2 import Geometry
@@ -50,6 +50,11 @@ class User(db.Model):
     interests_cache = db.Column(ARRAY(Integer), server_default=text("'{}'::integer[]"), nullable=False)
     biography = db.Column(Text, nullable=True)
     location = db.Column(Geometry(geometry_type="POINT", srid=4326), nullable=True)
+    city = db.Column(String(100), nullable=True)
+    address = db.Column(Text, nullable=True)
+    lat = db.Column(Float, nullable=True)
+    lon = db.Column(Float, nullable=True)
+    last_seen = db.Column(TIMESTAMP(timezone=True), nullable=True)
     created_at = db.Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
     is_active = db.Column(Boolean, default=False, nullable=False)
     email_confirmed_at = db.Column(TIMESTAMP(timezone=True), nullable=True)
