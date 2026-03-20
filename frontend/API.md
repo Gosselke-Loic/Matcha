@@ -280,34 +280,29 @@
   > *Info :*  Base json structure
 ```json
 {
-  "id": "number",
-  "username": "string",
-  "firstName": "string",
-  "lastName": "string",
-  "biography": "string | null",
-  "birthdayDate": "Date",
-  "fameRate": "number",
-  "interests": [{"id": "number", "label": "string"}],
-  "gender": "string",
-  "city": "string",
-}
-```
+  "user": {
+    "id": "number",
+    "username": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "biography": "string | null",
+    "birthdayDate": "Date",
+    "fameRate": "number",
+    "interests": "number[]",
+    "gender": "string",
+    "city": "string",
 
-#### Add this to base json structure if it is not the profile of the logged-in user 
-```json
-{
-  "lastSeen": "Date"
-}
-```
+    // Add this if it is not the profile of the logged-in user
+    "lastSeen": "Date",
 
-#### Add this to base json structure if it is the profile of the logged-in user
-```json
-{
-  "email": "string",
-  "address": "string",
-  "lat": "number",
-  "lon": "number",
-  "sex_pref": "string" 
+    // Add this if it is the profile of the logged-in user
+    "email": "string",
+    "address": "string",
+    "lat": "number",
+    "lon": "number",
+    "sex_pref": "string",
+  },
+  "interests": [{"id": "number", "label": "string"}]
 }
 ```
 

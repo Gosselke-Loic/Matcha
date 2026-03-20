@@ -14,7 +14,10 @@ export const FORM_RULES = {
 
 export const getPasswordFields = ( commonWords: Set<string> ) => ({
   password: FORM_RULES.password
-    .refine((val) => !commonWords.has(val.toLowerCase()), "Password is too common"),
+    .refine((val) => {
+      const normalized = val.toLowerCase().replace(/[^a-z]/g, '');
+      return (!commonWords.has(normalized));
+    }, "Password is too common"),
   confirmPassword: z.string()
 });
 

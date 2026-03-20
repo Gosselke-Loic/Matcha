@@ -4,7 +4,6 @@ import {
   FORM_RULES,
   optionalZodType,
 } from '@shared/schemas/common';
-import { tagsSchema } from '@/shared/schemas/tag-schema';
 import { genderEnum } from '@/shared/schemas/gender-schema';
 import { sexPrefsEnum } from '@/shared/schemas/sex_prefs-schema';
 
@@ -16,7 +15,7 @@ const profileBaseSchema = z.object({
   biography: z.string().nullable(),
   birthdayDate: z.coerce.date(),
   fameRate: z.number(),
-  interests: tagsSchema,
+  interests: z.array(z.number().int().positive()),
   gender: z.string(),
   city: z.string()
 });
@@ -58,7 +57,7 @@ const validationOwnProfileSchema = z.object({
     .min(10, "Tell a little more about yourself")
     .max(500, "500 characters maximum")
   ),
-  interests: tagsSchema
+  interests: z.array(z.number().int().positive())
     .min(3, "Minimum of 3 tags required")
     .max(6, "Maximum of 6 tags allowed"),
   address: optionalZodType(

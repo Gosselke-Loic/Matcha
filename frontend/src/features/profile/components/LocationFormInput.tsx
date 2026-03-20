@@ -51,7 +51,7 @@ export const LocationFormInput = () => {
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <div className="flex flex-col gap-1.5 mb-4">
+      <div className="flex gap-1.5 mb-4">
         <label htmlFor="address" className="text-sm font-medium text-slate-700">
           Your address
         </label>

@@ -25,20 +25,23 @@ export function ProfileBaseForm (
       </header>
     
       <div className="grid gap-4">
-        <section className="rounded-xl border bg-card p-6 shadow-sm">
-          <div className="mb-6">
+        <section className="rounded-xl bg-card px-4 shadow-sm">
+          <div className="mb-2">
             <h2 className="text-lg font-semibold">Personal informations</h2>
-            <p className="text-sm text-muted-foreground">Modify your informations</p> 
           </div>
 
-          <div className="flex flex-col gap-1 py-3 border-b border-gray-100">
-            <label className="text-sm font-medium text-gray-500">Age</label>
-            <span className="text-gray-900 font-medium">
-              {calculateAge(data.birthdayDate)} years old
-            </span>
-          
-            <label className="text-sm font-medium text-gray-500">Fame rate</label>
-            <span className="text-gray-900 font-medium">{data.fameRate}</span>
+          <div className="flex flex-col gap-4 ps-2 border-b border-gray-100">
+            <div>
+              <label className="font-medium text-gray-500">Age</label>
+              <span className="text-gray-900 font-medium">
+                {calculateAge(data.birthdayDate)} years old
+              </span>
+            </div>
+
+            <div>
+              <label className="font-medium text-gray-500">Fame rate</label>
+              <span className="text-gray-900 font-medium">{data.fameRate}</span>
+            </div>
           </div>
 
           <ProfileForm interests={interests} data={data} />
