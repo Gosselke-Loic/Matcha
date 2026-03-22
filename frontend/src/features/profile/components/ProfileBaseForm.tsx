@@ -15,7 +15,7 @@ interface ProfileBaseFormProps {
 
 const EMPTY_SET = new Set<string>();
 
-export function ProfileBaseForm (
+export default function ProfileBaseForm (
   { data, dataImages, interests, commonWords }: ProfileBaseFormProps
 ) {
   return (

@@ -6,7 +6,7 @@ interface ProfileProps {
   images: ImagesProfileData;
 };
 
-export const Profile = ({ data, images }: ProfileProps) => {
+export default function Profile({ data, images }: ProfileProps) {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-4 md:p-8">
       <header>

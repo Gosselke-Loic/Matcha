@@ -11,13 +11,13 @@ import {
 type ResetPasswordPayload = ResetPasswordFormData & {token: string };
 
 export const authApi = {
-  login: (credentials: z.infer<typeof loginSchema>) => {
+  login: async (credentials: z.infer<typeof loginSchema>) => {
     return (api.post("/auth/login", credentials, userSchema ));
   },
-  logout: () => {
+  logout: async () => {
     return (api.post("/auth/logout", {}, z.void()));
   },
-  register: (data: RegisterFormData) => {
+  register: async (data: RegisterFormData) => {
     const { confirmPassword, birthday, ...payload } = data;
     return (api.post(
       "/auth/register",
@@ -28,14 +28,14 @@ export const authApi = {
       z.void()
     ));
   },
-  forgotPassword: (email: string) => {
+  forgotPassword: async (email: string) => {
     return (api.post(
       'auth/forgot-password',
       { email: email },
       z.void()
     ));
   },
-  resetPassword: (data: ResetPasswordPayload) => {
+  resetPassword: async (data: ResetPasswordPayload) => {
     const { confirmPassword, ...payload } = data;
     return (api.post(
       'auth/reset-password',

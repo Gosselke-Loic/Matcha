@@ -4,9 +4,9 @@ import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import ApiError from '@/api/ApiError';
 import { commonWordsOptions } from '@/api/common-queries';
-import { Profile } from '@/features/profile/components/Profile';
+import Profile from '@/features/profile/components/Profile';
 import { authMeOptions } from '@/features/auth/services/auth-options';
-import { ProfileBaseForm } from '@/features/profile/components/ProfileBaseForm';
+import ProfileBaseForm from '@/features/profile/components/ProfileBaseForm';
 import { profileImagesQueryOptions, profileQueryOptions } from '@/features/profile/services/profile-options';
 
 const ProfileParamsSchema = z.preprocess(

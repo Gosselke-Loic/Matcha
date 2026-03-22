@@ -11,3 +11,12 @@ export const profileImagesKeys = {
   all: ['profile', 'images'] as const,
   detail: (userId: number) => [...profileKeys.all, userId] as const 
 };
+
+export const unreadMessagesCountKeys = {
+  all:  ["unreadmessages_count"] as const
+};
+
+export const chatMessagesKeys = {
+  all: ["messages"],
+  detail: (chatId: number) => [...chatMessagesKeys.all, chatId] as const
+};

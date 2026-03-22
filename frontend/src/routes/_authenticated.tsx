@@ -7,6 +7,8 @@ import {
 import ApiError from "@/api/ApiError";
 import Navbar from "@/shared/components/layouts/Navbar";
 import Footer from "@/shared/components/layouts/Footer";
+import ChatModal from "@/features/chat/components/ChatModal";
+//import { useSocketSync } from "@/shared/hooks/useSocketSync";
 import { GeneralError } from "@shared/components/errors/GeneralError";
 import { authMeOptions } from "@/features/auth/services/auth-options";
 import PageTransition from "@shared/components/transition/PageTransition";
@@ -36,15 +38,20 @@ export const Route = createFileRoute('/_authenticated')({
   pendingComponent: () => <div> Replace for a custom component here </div>,
   pendingMs: 500,
   errorComponent: GeneralError,
-  component: () => (
-    <>
-      <Navbar />
-      <PageTransition>
-        <Outlet />
-      </PageTransition>
-      <Footer />
-    </>
-  ),
+  component: () => {
+    //useSocketSync();
+    
+    return(
+      <>
+        <Navbar />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
+        <ChatModal />
+        <Footer />
+      </>
+    );
+  },
   notFoundComponent: () => {
     <>
       <Navbar />

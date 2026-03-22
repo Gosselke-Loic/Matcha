@@ -22,7 +22,7 @@ interface ProfileFormProps {
   data: OwnProfileData;
 };
 
-export default function ProfileForm ({ data, interests }: ProfileFormProps) {
+export default function ProfileForm({ data, interests }: ProfileFormProps) {
   const { updateProfile } = useProfile();
 
   const gender = genderEnum.safeParse(data.gender);
