@@ -13,12 +13,12 @@ interface UIStore {
 export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
-      activeChatId: null,
       isChatOpen: false,
+      activeChatId: null,
       openChat: () => set({ isChatOpen: true }),
       closeChat: () => set({ isChatOpen: false }),
-      toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
-      setActiveChat: (id) => set({ activeChatId: id })
+      setActiveChat: (id) => set({ activeChatId: id }),
+      toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen }))
     }),
     { name: 'ui-storage' }
   )

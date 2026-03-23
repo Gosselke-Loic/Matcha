@@ -2,10 +2,14 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query"; 
 
 import { socket } from "../libs/socket";
+import {
+  messageSchema,
+  type MessagesData,
+  type unreadChatsData
+} from "@/features/chat/schemas/message-schema";
 import { useUIStore } from "../stores/useUIStore";
-import { messageSchema } from "@/features/chat/schemas/message-schema";
+import { chatMessagesKeys, unreadChatsKeys } from "../constants/query-keys";
 
-// socket.on() here only for global notifications
 export const useSocketSync = () => {
   const queryClient = useQueryClient();
 
@@ -13,23 +17,33 @@ export const useSocketSync = () => {
     socket.connect();
 
     socket.on("new_message", (rawData) => {
-      const activeChatId = useUIStore.getState().activeChatId;
+      const { activeChatId } = useUIStore.getState();
 
       const result = messageSchema.safeParse(rawData);
-      if (!result.success) {
-        // options ->
-        // ignore message
-        // toast and ignore
-        // throw and stop application
-        return ;
-      };
+      if (!result.success) { return ; };
 
       const msg = result.data;
-      if (msg.chatId === activeChatId) {
-        // update navbar icon with unread message
+      if (msg.chatId !== activeChatId) {
+        queryClient.setQueryData<unreadChatsData>(unreadChatsKeys.all, (old) => {
+          if (!old) return ({ unreadChats: [msg.chatId] });
+
+          if (old.unreadChats.includes(msg.chatId)) return (old);
+
+          return ({
+            ...old,
+            unreadChats: [...old.unreadChats, msg.chatId]
+          });
+        });
       };
 
-      // setQueryData to manually update messages before staleTime 
+      queryClient.setQueryData<MessagesData>(chatMessagesKeys.detail(msg.chatId), (old) => {
+        if (!old) return (old);
+
+        return ({
+          ...old,
+          messages: [...old.messages, msg]
+        });
+      });
     });
 
     socket.on("new_match", () => {

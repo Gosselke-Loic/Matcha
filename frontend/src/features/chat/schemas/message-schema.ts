@@ -5,7 +5,7 @@ export const messageSchema = z.object({
   chatId: z.number().int().positive(),
   text: z.string(),
   senderId: z.number().int().positive(),
-  // createdAt -> Date
+  createdAt: z.coerce.date()
 });
 export type MessageData = z.infer<typeof messageSchema>;
 
@@ -15,7 +15,7 @@ export const messagesSchema = z.object({
 });
 export type MessagesData = z.infer<typeof messagesSchema>;
 
-export const unreadMessagesCountSchema = z.object({
-  count: z.number().int()
+export const unreadChatsSchema = z.object({
+  unreadChats: z.array(z.number().int().positive())
 });
-export type unreadMessagesCountData = z.infer<typeof unreadMessagesCountSchema>;
+export type unreadChatsData = z.infer<typeof unreadChatsSchema>;
