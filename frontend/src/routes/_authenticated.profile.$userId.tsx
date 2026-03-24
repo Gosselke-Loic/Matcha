@@ -1,13 +1,12 @@
 import { z } from 'zod';
-import { useSuspenseQuery, useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import ApiError from '@/api/ApiError';
-import { commonWordsOptions } from '@/api/common-queries';
 import Profile from '@/features/profile/components/Profile';
 import { authMeOptions } from '@/features/auth/services/auth-options';
 import ProfileBaseForm from '@/features/profile/components/ProfileBaseForm';
-import { profileImagesQueryOptions, profileQueryOptions } from '@/features/profile/services/profile-options';
+import { profileQueryOptions } from '@/features/profile/services/profile-options';
 
 const ProfileParamsSchema = z.preprocess(
   (val) => (val === "" ? undefined : val),
@@ -25,11 +24,7 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
      
     const isOwner = user.id === userId;
     try {
-      await Promise.all([
-        queryClient.ensureQueryData(profileQueryOptions(userId, isOwner)),
-        queryClient.ensureQueryData(profileImagesQueryOptions(userId)),
-        ...(isOwner ? [queryClient.ensureQueryData(commonWordsOptions)] : [])
-      ]);
+      await queryClient.ensureQueryData(profileQueryOptions(userId, isOwner));
     } catch (error) {
       if (error instanceof ApiError && error.status === 404) {
         throw (notFound());
@@ -44,24 +39,20 @@ export const Route = createFileRoute('/_authenticated/profile/$userId')({
 function ProfileComponent() {
   const { userId } = Route.useParams();
 
-  const { data: user } = useQuery(authMeOptions); 
-  const isOwner = user?.id === userId;
+  const { data: user } = useSuspenseQuery(authMeOptions); 
+  const isOwner = user.id === userId;
 
-  const { data: images } = useSuspenseQuery(profileImagesQueryOptions(userId));
   const { data: profile } = useSuspenseQuery(profileQueryOptions(userId, isOwner));
-  const { data: commonWords } = useQuery({ ...commonWordsOptions, enabled: isOwner });
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-50'>
       {('interests' in profile) ? (
         <ProfileBaseForm
-          dataImages={images}
           data={profile.user}
-          commonWords={commonWords}
           interests={profile.interests}
         />
       ) : (
-        <Profile images={images} data={profile.user} />
+        <Profile data={profile.user} />
       )}
     </div>
   );

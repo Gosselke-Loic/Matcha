@@ -6,9 +6,15 @@ import {
   profileSchema,
   ownProfileSchema
 } from "../schemas/profile-schema";
+import {
+  profileKeys,
+  profileImagesKeys,
+  profileLikersKeys,
+  profileViewersKeys
+} from "@/shared/constants/query-keys";
 import { tagsSchema } from "@/shared/schemas/tag-schema";
 import { imagesProfileSchema } from "../schemas/images-schema";
-import { profileImagesKeys, profileKeys } from "@/shared/constants/query-keys";
+import { likersSchema, viewersSchema } from "../schemas/activity-schema";
 
 const ownProfileResponseSchema = z.object({
   interests: tagsSchema,
@@ -17,6 +23,24 @@ const ownProfileResponseSchema = z.object({
 
 const profileResponseSchema = z.object({
   user: profileSchema
+});
+
+export const profileLikersOptions = (
+  userId: number
+) => queryOptions({
+  queryKey: profileLikersKeys.detail(userId),
+  queryFn: async () => api.get(`/users/${userId}/likes`, likersSchema),
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 60
+});
+
+export const profileViewersOptions = (
+  userId: number
+) => queryOptions({
+  queryKey: profileViewersKeys.detail(userId),
+  queryFn: async () => api.get(`/users/${userId}/views`, viewersSchema),
+  staleTime: 1000 * 60 * 5,
+  gcTime: 1000 * 60 * 60
 });
 
 export const profileQueryOptions = (

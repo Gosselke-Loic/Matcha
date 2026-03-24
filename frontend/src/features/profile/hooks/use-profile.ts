@@ -43,7 +43,6 @@ export const useProfile = () => {
     onSuccess: (res) => {
       console.log(res);
       // toast
-      // invalidate query profile
       queryClient.invalidateQueries({ queryKey: authMeKeys.all });
     }
   });

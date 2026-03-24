@@ -1,64 +1,80 @@
+import {
+  HeartIcon,
+  UserCircleIcon,
+  ShieldCheckIcon,
+  PhoneOutgoingIcon
+} from "lucide-react";
+import {
+  Tab,
+  TabList,
+  TabGroup,
+  TabPanel,
+  TabPanels,
+  Transition
+} from "@headlessui/react";
+
 import ProfileForm from "./ProfileForm";
-import calculateAge from "@/shared/utils/calculateAge";
+import HeaderProfile from "./HeaderProfile";
+import ProfileImageForm from "./ProfileImagesForm";
+import ProfileActivityForn from "./ProfileActivityForm";
 import type { Tags } from "@/shared/schemas/tag-schema";
-import { ProfilePasswordForm } from "./ProfilePasswordForm";  
+import ProfilePasswordForm from "./ProfilePasswordForm";  
 import type { OwnProfileData } from "../schemas/profile-schema";
-import type { ImagesProfileData } from "../schemas/images-schema";
-import { ProfileImageForm } from "./ProfileImagesForm";
 
 interface ProfileBaseFormProps {
   data: OwnProfileData;
-  dataImages: ImagesProfileData;
   interests: Tags;
-  commonWords: Set<string> | undefined;
 };
 
-const EMPTY_SET = new Set<string>();
-
-export default function ProfileBaseForm (
-  { data, dataImages, interests, commonWords }: ProfileBaseFormProps
-) {
+export default function ProfileBaseForm ({ data, interests }: ProfileBaseFormProps) {
+  const categories = [
+    { name: 'Profile', icon: UserCircleIcon, component: <ProfileForm interests={interests} data={data} /> },
+    { name: 'Images', icon: PhoneOutgoingIcon, component: <ProfileImageForm userId={data.id} /> },
+    { name: 'Activity', icon: HeartIcon, component: <ProfileActivityForn userId={data.id} /> },
+    { name: 'Security', icon: ShieldCheckIcon, component: <ProfilePasswordForm /> }
+  ];
+  
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-4 md:p-8">
-      <header>
-        <h1 className="text-2xl font bold tracking-tight">Your Profile</h1>
-      </header>
-    
-      <div className="grid gap-4">
-        <section className="rounded-xl bg-card px-4 shadow-sm">
-          <div className="mb-2">
-            <h2 className="text-lg font-semibold">Personal informations</h2>
-          </div>
+    <div className="mx-auto max-w-4xl space-y-6 p-4 md:p-8">
+      <HeaderProfile />
 
-          <div className="flex flex-col gap-4 ps-2 border-b border-gray-100">
-            <div>
-              <label className="font-medium text-gray-500">Age</label>
-              <span className="text-gray-900 font-medium">
-                {calculateAge(data.birthdayDate)} years old
-              </span>
-            </div>
-
-            <div>
-              <label className="font-medium text-gray-500">Fame rate</label>
-              <span className="text-gray-900 font-medium">{data.fameRate}</span>
-            </div>
-          </div>
-
-          <ProfileForm interests={interests} data={data} />
-        </section>
-
-        <section>
-          <ProfileImageForm dataImages={dataImages} userId={data.id} />
-        </section>
-
-        <section>
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold">Security</h2>
-            <p className="text-sm text-muted-foreground">Modify your password</p> 
-          </div>
-          <ProfilePasswordForm commonWords={commonWords ?? EMPTY_SET} />
-        </section>
-      </div>
+      <TabGroup>
+        <TabList className="flex space-x-1 rounded-xl border-pink-100 p-1">
+          {categories.map((category) => (
+            <Tab
+              key={category.name}
+              className="py-2 px-1 text-sm font-medium transition-colors focus:outline-none
+                data-selected:border-b-2 data-selected:border-pink-400 data-selected:text-pink-500
+                text-gray-500 hover:text-gray-700"
+            >
+              <div className="flex flex-col items-center sm:flex-row sm:justify-center gap-2">
+                <category.icon className="h-5 w-5" />
+                <span className="hidden sm:inline">{ category.name }</span>
+              </div>
+            </Tab>
+          ))}          
+        </TabList>
+        <TabPanels className="mt-4">
+          {categories.map((category) => (
+            <TabPanel key={category.name} unmount={false} className="focus:outline-none">
+              <Transition
+                appear
+                enter="transition-opacity duration-300 ease-out"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="transition-opcity duration-150 ease-in"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                { /* Maybe need to center components */ }
+                <div>
+                  {category.component}
+                </div>
+              </Transition>
+            </TabPanel>
+          ))}
+        </TabPanels>
+      </TabGroup>
     </div>
   );
 };

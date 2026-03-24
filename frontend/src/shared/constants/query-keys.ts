@@ -2,6 +2,7 @@ export const authMeKeys = {
   all: ['auth-me'] as const
 };
 
+
 export const profileKeys = {
   all: ['profile'] as const,
   detail: (userId: number) => [...profileKeys.all, userId] as const
@@ -11,6 +12,17 @@ export const profileImagesKeys = {
   all: ['profile', 'images'] as const,
   detail: (userId: number) => [...profileKeys.all, userId] as const 
 };
+
+export const profileLikersKeys = {
+  all: ['profile', 'likers'] as const,
+  detail: (userId: number) => [...profileLikersKeys.all, userId] as const
+};
+
+export const profileViewersKeys = {
+  all: ['profile', 'viewers'] as const,
+  detail: (userId: number) => [...profileViewersKeys.all, userId] as const
+};
+
 
 export const unreadChatsKeys = {
   all:  ["unread_chats"] as const

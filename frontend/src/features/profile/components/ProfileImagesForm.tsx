@@ -1,22 +1,26 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, type ChangeEvent } from "react"; 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 
 import {
   imagesFormArraySchema,
-  type ImagesProfileData,
   type ImageFormArrayData
 } from "../schemas/images-schema";
 import ImagePreview from "./ImagePreview";
 import { useProfile } from "../hooks/use-profile";
 import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
+import { profileImagesQueryOptions } from "../services/profile-options";
 
 interface ProfileImagesFormProps {
   userId: number;
-  dataImages: ImagesProfileData;
 };
 
-export function ProfileImageForm ({ dataImages, userId }: ProfileImagesFormProps) {
+export default function ProfileImageForm ({ userId }: ProfileImagesFormProps) {
+  const { data: dataImages, isLoading } = useQuery(profileImagesQueryOptions(userId));
+
+  if (isLoading) return (<></>) // To do Skeleton
+  
   const {
     reset,
     control,
@@ -29,7 +33,7 @@ export function ProfileImageForm ({ dataImages, userId }: ProfileImagesFormProps
   });
 
   useEffect(() => {
-    if (dataImages.images) {
+    if (dataImages && dataImages.images) {
       reset({
         images: dataImages.images.map((image) => ({
           id: image.id,

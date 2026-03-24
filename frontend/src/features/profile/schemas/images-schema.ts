@@ -3,7 +3,7 @@ import { z } from "zod";
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const imageSchema = z.object({
+export const imageSchema = z.object({
   id: z.number().positive(),
   filename: z.string(),
   isPrimary: z.boolean()

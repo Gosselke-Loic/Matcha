@@ -4,6 +4,7 @@ import {
   FORM_RULES,
   optionalZodType,
 } from '@shared/schemas/common';
+import { imageSchema } from './images-schema';
 import { genderEnum } from '@/shared/schemas/gender-schema';
 import { sexPrefsEnum } from '@/shared/schemas/sex_prefs-schema';
 
@@ -22,7 +23,8 @@ const profileBaseSchema = z.object({
 
 
 export const profileSchema = profileBaseSchema.extend({
-  lastSeen: z.coerce.date()
+  lastSeen: z.coerce.date(),
+  images: z.array(imageSchema)
 });
 export type ProfileData = z.infer<typeof profileSchema>;
 
