@@ -5,7 +5,7 @@ import { chatMessagesKeys, unreadChatsKeys } from "@/shared/constants/query-keys
 
 export const chatUnreadMessagesCountOptions = queryOptions({
   queryKey: unreadChatsKeys.all,
-  queryFn: async () => api.get("/notifications/unread", unreadChatsSchema),
+  queryFn: async () => api.get("/chat/unread", unreadChatsSchema),
   staleTime: 1000 * 60
 });
 
