@@ -4,6 +4,7 @@ from .auth import bp as auth_bp, jwt
 from .profile import bp as profile_bp
 from .models import db
 from .email import mail
+from .chat import socketio, chat_bp
 
 
 def create_app(config_object="project.config.Config"):
@@ -13,14 +14,17 @@ def create_app(config_object="project.config.Config"):
     db.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)
+    socketio.init_app(app, cors_allowed_origins="*")
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(profile_bp, url_prefix="/api/users")
+    app.register_blueprint(chat_bp, url_prefix="/api")
 
     @app.route("/")
     def _root():
         return {"i am": "alive"}
 
     return app
+
 
 app = create_app()
