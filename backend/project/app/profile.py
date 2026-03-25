@@ -17,8 +17,6 @@ def base_user_payload(user: User):
         "firstName": user.first_name,
         "lastName": user.last_name,
         "biography": user.biography,
-        "birthdayDate": user.birthday_date.isoformat(),
-        "fameRate": user.fame_rate,
         "interests": [],
         "gender": user.gender.value,
         "city": user.city
@@ -28,7 +26,12 @@ def base_user_payload(user: User):
 def public_user_payload(user: User):
     payload = base_user_payload(user)
     payload.update({
-        "lastSeen": user.last_seen.isoformat() if user.last_seen is not None else None
+        "lastSeen": user.last_seen.isoformat() if user.last_seen is not None else None,
+        "images": [],
+        "isActive": user.is_active,
+        "hasLiked": True,
+        "birthdayDate": user.birthday_date.isoformat(),
+        "fameRate": user.fame_rate,
     })
     return payload
 
@@ -155,7 +158,7 @@ def upload_images():
     if not request.files:
         return jsonify(msg="No files provided"), 400
 
-    upload_folder = os.path.join(current_app.root_path, "static", "uploads")
+    upload_folder = os.path.join(current_app.root_path, "uploads")
     os.makedirs(upload_folder, exist_ok=True)
 
     saved = []
@@ -167,7 +170,7 @@ def upload_images():
         fname = prefix + filename
         path = os.path.join(upload_folder, fname)
         f.save(path)
-        url = f"/static/uploads/{fname}"
+        url = f"/uploads/{fname}"
         photo = UserPhoto(user_id=user.id, url=url)
         db.session.add(photo)
         saved.append(photo)

@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 )
 
-from .models import db, User, RefreshToken, MailToken
+from .models import db, User, RefreshToken, MailToken, UserPhoto
 from .security import verify_password, hash_password
 from .email import generate_token, send_confirmation_email, confirm_token, send_reset_email
 
@@ -173,7 +173,7 @@ def login():
     if not user or not verify_password(password, user.password):
         return jsonify(msg="Bad username or password"), 401
     if not user.is_active:
-        return jsonify(msg="Email not confirmed"), 403
+        return jsonify(message="Email not confirmed"), 403
 
     identity_str = str(user.id)
     access = create_access_token(identity=identity_str)
@@ -181,7 +181,15 @@ def login():
     refresh_jti = decode_token(refresh)["jti"]
     store_refresh_token(refresh_jti, user.id, current_app.config["JWT_REFRESH_TOKEN_EXPIRES"])
 
-    resp = jsonify(id=user.id, username=user.username, isComplete=True, profileImage="")
+    primary = UserPhoto.query.filter_by(user_id=user.id, is_primary=True).first()
+    profile_image_url = primary.url if primary else ""
+
+    resp = jsonify({
+        "id": user.id,
+        "username": user.username,
+        "isComplete": True,
+        "profileImage": profile_image_url
+        })
     set_access_cookies(resp, access)
     set_refresh_cookies(resp, refresh)
     return resp
