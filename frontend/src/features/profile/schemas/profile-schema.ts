@@ -14,17 +14,18 @@ const profileBaseSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   biography: z.string().nullable(),
-  birthdayDate: z.coerce.date(),
-  fameRate: z.number(),
   interests: z.array(z.number().int().positive()),
   gender: z.string(),
   city: z.string()
 });
 
-
 export const profileSchema = profileBaseSchema.extend({
   lastSeen: z.coerce.date(),
-  images: z.array(imageSchema)
+  images: z.array(imageSchema),
+  birthdayDate: z.coerce.date(),
+  fameRate: z.number(),
+  isActive: z.boolean(),
+  hasLiked: z.boolean(),
 });
 export type ProfileData = z.infer<typeof profileSchema>;
 

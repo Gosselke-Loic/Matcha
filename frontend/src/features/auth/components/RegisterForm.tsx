@@ -39,8 +39,8 @@ export const RegisterForm = ({ commonWords }: RegisterFormProps) => {
   const onSubmit = (data: RegisterFormData) => {
     signup.mutate(data, {
       onSuccess: () => {
-        navigate({ to: "/login" });
         methods.reset();
+        navigate({ to: "/login" });
       }
     });
   };

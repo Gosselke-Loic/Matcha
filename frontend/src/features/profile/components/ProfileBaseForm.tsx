@@ -12,6 +12,7 @@ import {
   TabPanels,
   Transition
 } from "@headlessui/react";
+import { Fragment } from "react";
 
 import ProfileForm from "./ProfileForm";
 import HeaderProfile from "./HeaderProfile";
@@ -56,21 +57,22 @@ export default function ProfileBaseForm ({ data, interests }: ProfileBaseFormPro
         </TabList>
         <TabPanels className="mt-4">
           {categories.map((category) => (
-            <TabPanel key={category.name} unmount={false} className="focus:outline-none">
-              <Transition
-                appear
-                enter="transition-opacity duration-300 ease-out"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="transition-opcity duration-150 ease-in"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                { /* Maybe need to center components */ }
-                <div>
+            <TabPanel key={category.name} unmount={false} as={Fragment}>
+              {({ selected }) => (
+                <Transition
+                  appear
+                  as="div" // Maybe need to center component with className
+                  show={selected}
+                  enter="transition-opacity duration-300 ease-out"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="transition-opcity duration-150 ease-in"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
                   {category.component}
-                </div>
-              </Transition>
+                </Transition>
+              )}
             </TabPanel>
           ))}
         </TabPanels>

@@ -1,11 +1,9 @@
 import { z } from "zod";
 
 import { socket } from "@/shared/libs/socket"; 
+import { messageSchema } from "../schemas/message-schema";
 
-const sendMessageSchema = z.object({
-  chatId: z.number().int().positive(),
-  text: z.string()
-});
+const sendMessageSchema = messageSchema.pick({ chatId: true, text: true });
 type SendMessageData = z.infer<typeof sendMessageSchema>;
 
 export const chatApi = {

@@ -15,13 +15,10 @@ import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 export default function ProfilePasswordForm() {
   const { data, isLoading } = useQuery(commonWordsOptions);
-
-  if (isLoading) return (<></>) // To do Skeleton
-
   const navigate = useNavigate();
-  const commonWords = data ?? new Set<string>();
   const { updatePasswordProfile } = useProfile();
 
+  const commonWords = useMemo(() => data ?? new Set<string>(), [data]);
   const schema = useMemo(
     () => createProfilePasswordFormSchema(commonWords), [commonWords]
   );
@@ -39,10 +36,13 @@ export default function ProfilePasswordForm() {
   const onSubmit = (data: ProfilePasswordFormData) => {
     updatePasswordProfile.mutate(data, {
       onSuccess: () => {
+        methods.reset();
         navigate({ to: "/login", replace: true });
       }
     });
   };
+  
+  if (isLoading) return (<></>) // To do Skeleton
 
   return (
     <>

@@ -40,7 +40,7 @@ export const LocationFormInput = () => {
       suggestions.map((feature, idx) => (
         <li
           key={`${feature.properties.name}-${idx}`}
-          className="p-2 hover:bg-pink-50 cursor-pointer text-sm"
+          className="relative p-2 hover:bg-pink-50 cursor-pointer text-sm"
           onClick={() => {onSelectOption(feature)}}
         >
           {feature.properties.name}, {feature.properties.city}
@@ -51,7 +51,9 @@ export const LocationFormInput = () => {
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <div className="flex gap-1.5 mb-4">
+      <div
+        className="flex"
+      >
         <label htmlFor="address" className="text-sm font-medium text-slate-700">
           Your address
         </label>
@@ -69,7 +71,7 @@ export const LocationFormInput = () => {
           }}
           onFocus={() => setShowList(true)}
           placeholder="City or address..."
-          className={`px-3 py-2 border rounded-md outline-none transition-colors
+          className={`block w-full px-3 py-2 border rounded-md outline-none transition-colors
             ${error?.message ? "border-red-500 focus:border-red-600" : "bg-slate-300 focus:border-pink-500"}
           `}
         />
@@ -77,7 +79,7 @@ export const LocationFormInput = () => {
         <button
           type="button"
           onClick={handleGPS}
-          className="bg-gray-100 px-3 rounded hover:bg-gray-200"
+          className="shrink-0 font-semibold bg-gray-100 px-3 rounded hover:bg-pink-200"
         >
           Locate Me
         </button>

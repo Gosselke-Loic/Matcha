@@ -2,6 +2,7 @@ import { useMutation , useQueryClient } from '@tanstack/react-query';
 
 import { authApi } from '../services/auth-service';
 import { authMeOptions } from '../services/auth-options'; 
+import { authMeKeys } from '@/shared/constants/query-keys';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -38,7 +39,8 @@ export const useAuth = () => {
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSettled: () => {
-      queryClient.clear();
+      queryClient.setQueryData(authMeKeys.all, null);
+      queryClient.removeQueries();
       // toast success
       // navigate({ to: "/login" }); call navigate in the component
     }
