@@ -1,0 +1,31 @@
+docker compose -f docker-compose-prod.yml exec backend python manage.py create_db
+docker compose -f docker-compose-prod.yml exec backend python manage.py seed_db
+
+curl -i -c cookiejar -X POST http://localhost:5001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"test","password":"test"}'
+
+CSRF_ACCESS=$(grep csrf_access_token cookiejar | awk '{print $7}')
+CSRF_REFRESH=$(grep csrf_refresh_token cookiejar | awk '{print $7}')
+echo "CSRF_ACCESS=$CSRF_ACCESS"
+echo "CSRF_REFRESH=$CSRF_REFRESH"
+
+curl -i -b cookiejar -X GET http://localhost:5001/api/auth/protected \
+  -H "X-CSRF-TOKEN: $CSRF_ACCESS"
+
+curl -i -b cookiejar -c cookiejar -X POST http://localhost:5001/api/auth/refresh \
+  -H "X-CSRF-TOKEN: $CSRF_REFRESH" -d '{}'
+
+curl -i -b cookiejar -X POST http://localhost:5001/api/auth/logout \
+  -H "X-CSRF-TOKEN: $CSRF_REFRESH"
+
+curl -i -X POST http://localhost:5001/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","email":"testuser@example.com","password":"password123","birthday_date":"1990-01-01","first_name":"Test","last_name":"User"}'
+
+curl -i -b cookiejar -X GET http://localhost:5001/api/profile/1 \
+  -H "X-CSRF-TOKEN: $CSRF_ACCESS"
+
+curl -i -X POST http://localhost:5001/api/auth/password-reset/request \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com"}'

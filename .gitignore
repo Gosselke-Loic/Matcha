@@ -65,3 +65,7 @@ build/
 
 # --- Doc ---
 suggestions.txt
+
+# Testing
+cookiejar
+badjar
