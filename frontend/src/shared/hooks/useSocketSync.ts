@@ -64,6 +64,8 @@ export const useSocketSync = () => {
       // toast
     });
 
+    // Add socket.on for new user logged-in or logged-out
+    
     return (() => {
       socket.off("new_like");
       socket.off("new_match");

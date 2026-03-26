@@ -13,25 +13,39 @@ export interface GeneralErrorProps extends Omit<Partial<ErrorComponentProps>, 'e
 
 // To do, wrap general error to center component
 export function GeneralError({ error, reset }: GeneralErrorProps) {
-
-  const actualError = (error as any)?.cause || error;
+  const actualError = error instanceof Error && error.cause ? error.cause : error;
 
   const message = error instanceof Error ? error.message : "Unexpected error occurred";
   return (
-    <div className="p-4 border border-red-500 bg-red-50 rounded">
-      <h3 className="font-bold text-xl">Oups !</h3>
+    <div className="p-6 border-1-4 border-red-500 bg-white shadow-sm rounded-lg">
+      <h3 className="font-bold text-xl text-red-700">Oups !</h3>
 
-      { actualError instanceof ZodError ? (
-        <ZodErrorComponent error={actualError} />
-      ) : actualError instanceof ApiError && actualError.status >=500 ? (
-        <ApiErrorComponent error={actualError} /> 
-      ) : (        
-        <p className="text-sm text-gray-600">{ message }</p>
-      )}
+      <div className="mt-2">
+        { actualError instanceof ZodError ? (
+          <ZodErrorComponent error={actualError} />
+        ) : actualError instanceof ApiError && actualError.status >=500 ? (
+          <ApiErrorComponent error={actualError} /> 
+        ) : (        
+          <p className="text-sm text-gray-700">{ message }</p>
+        )}
+      </div>
 
       <div className="flex gap-2 mt-4">
-        <button onClick={() => reset()}>Retry</button>
-        <button onClick={() => router.navigate({ to: '/' })}>Dashboard</button>
+        { reset && (
+          <button
+            // invalidateQueries()?
+            onClick={() => reset()}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm font-medium"
+          >
+            Retry
+          </button>
+        )}
+        <button
+          onClick={() => router.navigate({ to: '/' })}
+          className="px-4 py-2 bg-blue-600 hover:bg-gray-700 text-white rounded text-sm font-medium"
+        >
+          Dashboard
+        </button>
       </div>
     </div>
   );

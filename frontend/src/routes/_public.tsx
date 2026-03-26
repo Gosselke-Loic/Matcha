@@ -11,15 +11,16 @@ import PageTransition from "@shared/components/transition/PageTransition";
 
 export const Route = createFileRoute('/_public')({
   beforeLoad: async ({ context: { queryClient } }) => {
-    const user = await queryClient
-      .ensureQueryData(authMeOptions)
-      .catch(() => null);
-
-    if (user) {
-      throw redirect({
-        to: '/',
-        replace: true
-      });
+    try {
+      const user = await queryClient.ensureQueryData(authMeOptions)
+      if (user) {
+        throw redirect({
+          to: '/',
+          replace: true
+        });
+      };
+    } catch (error) {
+      return ;
     };
   },
   errorComponent: GeneralError,

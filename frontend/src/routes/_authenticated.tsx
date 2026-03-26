@@ -1,10 +1,10 @@
 import {
   Outlet,
   redirect,
+  isRedirect,
   createFileRoute,
 } from "@tanstack/react-router";
 
-import ApiError from "@/api/ApiError";
 import Navbar from "@/shared/components/layouts/Navbar";
 import Footer from "@/shared/components/layouts/Footer";
 import ChatModal from "@/features/chat/components/ChatModal";
@@ -17,22 +17,13 @@ export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context: { queryClient }, location }) => {
     try {
       const user = await queryClient.ensureQueryData(authMeOptions);
-
-      if (!user) {        
-        throw redirect({
-          to: '/login',
-          search: { redirect: location.href }
-        });
-      };
+      if (!user) throw new Error("Unauthorized");
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        throw redirect({
-          to: '/login',
-          search: { redirect: location.href }
-        });
-      };
-
-      throw error;
+      if (isRedirect(error)) throw error;
+      throw redirect({
+        to: '/login',
+        search: { redirect: location.href }
+      });
     };
   },
   pendingComponent: () => <div> Replace for a custom component here </div>,
