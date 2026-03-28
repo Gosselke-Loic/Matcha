@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import { FormProvider, useForm } from "react-hook-form";  
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import {
   type ProfilePasswordFormData,
@@ -14,7 +14,7 @@ import CustomSubmitButton from "@/shared/components/forms/SubmitButton";
 import CustomFormInput from "@/shared/components/forms/CustomFormInput";
 
 export default function ProfilePasswordForm() {
-  const { data, isLoading } = useQuery(commonWordsOptions);
+  const { data } = useSuspenseQuery(commonWordsOptions);
   const navigate = useNavigate();
   const { updatePasswordProfile } = useProfile();
 
@@ -41,8 +41,6 @@ export default function ProfilePasswordForm() {
       }
     });
   };
-  
-  if (isLoading) return (<></>) // To do Skeleton
 
   return (
     <>

@@ -12,7 +12,7 @@ import {
   TabPanels,
   Transition
 } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 
 import ProfileForm from "./ProfileForm";
 import HeaderProfile from "./HeaderProfile";
@@ -70,7 +70,9 @@ export default function ProfileBaseForm ({ data, interests }: ProfileBaseFormPro
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  {category.component}
+                  <Suspense /* fallback custom skeleton for all child components */ >
+                    {category.component}
+                  </Suspense>
                 </Transition>
               )}
             </TabPanel>

@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, type ChangeEvent } from "react"; 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import {
   imagesFormArraySchema,
@@ -17,9 +17,7 @@ interface ProfileImagesFormProps {
 };
 
 export default function ProfileImageForm ({ userId }: ProfileImagesFormProps) {
-  const { data: dataImages, isLoading } = useQuery(profileImagesQueryOptions(userId));
-
-  if (isLoading) return (<></>) // To do Skeleton
+  const { data: dataImages } = useSuspenseQuery(profileImagesQueryOptions(userId));
   
   const {
     reset,
@@ -33,7 +31,7 @@ export default function ProfileImageForm ({ userId }: ProfileImagesFormProps) {
   });
 
   useEffect(() => {
-    if (dataImages && dataImages.images) {
+    if (dataImages.images) {
       reset({
         images: dataImages.images.map((image) => ({
           id: image.id,
