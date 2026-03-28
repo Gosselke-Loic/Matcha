@@ -25,13 +25,13 @@ export const useSocketSync = () => {
       const msg = result.data;
       if (msg.chatId !== activeChatId) {
         queryClient.setQueryData<unreadChatsData>(unreadChatsKeys.all, (old) => {
-          if (!old) return ({ unreadChats: [msg.chatId] });
+          if (!old) return ({ chatIds: [msg.chatId] });
 
-          if (old.unreadChats.includes(msg.chatId)) return (old);
+          if (old.chatIds.includes(msg.chatId)) return (old);
 
           return ({
             ...old,
-            unreadChats: [...old.unreadChats, msg.chatId]
+            chatIds: [...old.chatIds, msg.chatId]
           });
         });
       };
@@ -52,19 +52,24 @@ export const useSocketSync = () => {
     });
 
     socket.on("new_like", () => {
+      // setQuerydata and add to cache manually
       //toast
-      // invalidateQueries likes
     });
 
     socket.on("view_profile", () => {
+      // setQuerydata and add to cache manually
       // toast
     });
 
     socket.on("new_unlike", () => {
+      // setQuerydata and add to cache manually
       // toast
     });
 
-    // Add socket.on for new user logged-in or logged-out
+    socket.on("user_status_change", () => {
+      // setQuerydata to change is a user logged-in or logged-out and refresh chat state, toast to notify "user has returned!"
+      // setQuerydata only if the user is on the profile of the user whose status has changed
+    });
     
     return (() => {
       socket.off("new_like");
@@ -72,6 +77,7 @@ export const useSocketSync = () => {
       socket.off("new_unlike");
       socket.off("new_message");
       socket.off("view_profile");
+      socket.off("user_status_change");
       socket.disconnect();
     });
   }, [queryClient]);

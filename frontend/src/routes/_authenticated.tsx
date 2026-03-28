@@ -12,6 +12,7 @@ import ChatModal from "@/features/chat/components/ChatModal";
 import { GeneralError } from "@shared/components/errors/GeneralError";
 import { authMeOptions } from "@/features/auth/services/auth-options";
 import PageTransition from "@shared/components/transition/PageTransition";
+import { chatUnreadMessagesCountOptions } from "@/features/chat/services/chat-options";
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context: { queryClient }, location }) => {
@@ -25,6 +26,9 @@ export const Route = createFileRoute('/_authenticated')({
         search: { redirect: location.href }
       });
     };
+  },
+  loader: async ({ context: { queryClient }}) => {
+    await queryClient.ensureQueryData(chatUnreadMessagesCountOptions);
   },
   pendingComponent: () => <div> Replace for a custom component here </div>,
   pendingMs: 500,

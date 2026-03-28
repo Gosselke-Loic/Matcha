@@ -1,19 +1,27 @@
+import {
+  Menu,
+  MenuItem,
+  MenuItems,
+  MenuButton,
+  Transition,
+  MenuSeparator
+} from "@headlessui/react";
 import { Fragment } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { MessageCircle, ArrowDown } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, MenuButton, Transition, MenuItems, MenuItem, MenuSeparator } from "@headlessui/react";
 
 import { useUIStore } from "@/shared/stores/useUIStore";
 import { useAuth } from "@/features/auth/hooks/use-auth"; 
 import { authMeOptions } from "@/features/auth/services/auth-options"; 
+import { chatUnreadMessagesCountOptions } from "@/features/chat/services/chat-options";
 
 export default function Navbar() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const openChat = useUIStore((state) => state.openChat);
   const { data: user, isLoading } = useSuspenseQuery(authMeOptions);
-  // useQuery for unread messages
+  const { data: unreadChats } = useSuspenseQuery(chatUnreadMessagesCountOptions);
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -33,7 +41,7 @@ export default function Navbar() {
           className="relative p-2 rounded-full transition-colors bg-slate-600 hover:bg-pink-600"
         >
           <MessageCircle size={8} />
-          { /* boolean notification replace */ true && (
+          { unreadChats.chatIds.length > 0 && (
             <span
               className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center
                 rounded-full bg-pink-500 ring-2 ring-white"

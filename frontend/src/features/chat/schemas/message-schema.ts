@@ -16,6 +16,6 @@ export const messagesSchema = z.object({
 export type MessagesData = z.infer<typeof messagesSchema>;
 
 export const unreadChatsSchema = z.object({
-  unreadChats: z.array(z.number().int().positive())
+  chatIds: z.array(z.number().int().positive())
 });
 export type unreadChatsData = z.infer<typeof unreadChatsSchema>;

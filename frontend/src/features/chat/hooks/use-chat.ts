@@ -20,7 +20,7 @@ export const useChat = () => {
 
       return ({
          ...old,
-         unreadChats: old.unreadChats.filter((id) => id !== chatId)
+         unreadChats: old.chatIds.filter((id) => id !== chatId)
       });
      }); 
     }
