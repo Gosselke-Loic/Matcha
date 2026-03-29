@@ -17,7 +17,7 @@ import { Fragment, Suspense } from "react";
 import ProfileForm from "./ProfileForm";
 import HeaderProfile from "./HeaderProfile";
 import ProfileImageForm from "./ProfileImagesForm";
-import ProfileActivityForn from "./ProfileActivityForm";
+import ProfileActivity from "./ProfileActivity";
 import type { Tags } from "@/shared/schemas/tag-schema";
 import ProfilePasswordForm from "./ProfilePasswordForm";  
 import type { OwnProfileData } from "../schemas/profile-schema";
@@ -31,7 +31,7 @@ export default function ProfileBaseForm ({ data, interests }: ProfileBaseFormPro
   const categories = [
     { name: 'Profile', icon: UserCircleIcon, component: <ProfileForm interests={interests} data={data} /> },
     { name: 'Images', icon: PhoneOutgoingIcon, component: <ProfileImageForm userId={data.id} /> },
-    { name: 'Activity', icon: HeartIcon, component: <ProfileActivityForn userId={data.id} /> },
+    { name: 'Activity', icon: HeartIcon, component: <ProfileActivity userId={data.id} /> },
     { name: 'Security', icon: ShieldCheckIcon, component: <ProfilePasswordForm /> }
   ];
   
