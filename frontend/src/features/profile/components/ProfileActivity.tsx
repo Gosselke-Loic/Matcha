@@ -2,19 +2,27 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { Tab, TabGroup, TabPanel, TabPanels } from "@headlessui/react";
 
 import { profileViewersOptions, profileLikersOptions } from "../services/profile-options";
+import ProfileActivityUserList from "./ProfileActivityUserList";
 
 interface ProfileActivityProps {
   userId: number;
 }
 
 export default function ProfileActivity({ userId }: ProfileActivityProps) {
-  const [{ data: likers, data: visitors }] = useSuspenseQueries({
-    queries: [profileLikersOptions(userId), profileViewersOptions(userId)]
+  const { likers, viewers } = useSuspenseQueries({
+    queries: [
+      profileLikersOptions(userId),
+      profileViewersOptions(userId)
+    ],
+    combine: (results) => ({
+      likers: results[0].data,
+      viewers: results[1].data
+    })
   });
 
   const tabs = [
-    { id: 'likes', label: "", title: "", data: likers, empty: "" },
-    { id: 'visitors', label: "", title: "", data: visitors, empty: "" }
+    { id: 'likes', label: "Likers", title: "To do", data: likers.likers, empty: "Nobody liked your profile yet" },
+    { id: 'viewers', label: "Viewers", title: "To do", data: viewers.viewers, empty: "Nobody visited your profile yet" }
   ];
   
   return (
@@ -42,7 +50,7 @@ export default function ProfileActivity({ userId }: ProfileActivityProps) {
               {tab.title}
             </h2>
 
-            {/* component list */}
+            <ProfileActivityUserList emptyMessage={tab.empty} users={tab.data} />
           </TabPanel>
         ))}
       </TabPanels>

@@ -56,7 +56,7 @@ export const useSocketSync = () => {
       //toast
     });
 
-    socket.on("view_profile", () => {
+    socket.on("profile_viewed", () => {
       // setQuerydata and add to cache manually
       // toast
     });

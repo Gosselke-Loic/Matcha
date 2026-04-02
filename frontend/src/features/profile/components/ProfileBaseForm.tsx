@@ -16,8 +16,8 @@ import { Fragment, Suspense } from "react";
 
 import ProfileForm from "./ProfileForm";
 import HeaderProfile from "./HeaderProfile";
-import ProfileImageForm from "./ProfileImagesForm";
 import ProfileActivity from "./ProfileActivity";
+import ProfileImageForm from "./ProfileImagesForm";
 import type { Tags } from "@/shared/schemas/tag-schema";
 import ProfilePasswordForm from "./ProfilePasswordForm";  
 import type { OwnProfileData } from "../schemas/profile-schema";
@@ -70,7 +70,7 @@ export default function ProfileBaseForm ({ data, interests }: ProfileBaseFormPro
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Suspense /* fallback custom skeleton for all child components */ >
+                  <Suspense /* To do, fallback custom skeleton for all child components */ >
                     {category.component}
                   </Suspense>
                 </Transition>

@@ -29,7 +29,10 @@ export const profileLikersOptions = (
   userId: number
 ) => queryOptions({
   queryKey: profileLikersKeys.detail(userId),
-  queryFn: async () => api.get(`/users/${userId}/likes`, likersSchema),
+  queryFn: async () => {
+    const res = await api.get(`/users/${userId}/likes`, likersSchema);
+    return (res);
+  },
   staleTime: 1000 * 60 * 5,
   gcTime: 1000 * 60 * 60
 });
@@ -38,7 +41,10 @@ export const profileViewersOptions = (
   userId: number
 ) => queryOptions({
   queryKey: profileViewersKeys.detail(userId),
-  queryFn: async () => api.get(`/users/${userId}/views`, viewersSchema),
+  queryFn: async () => {
+    const res = await api.get(`/users/${userId}/views`, viewersSchema);
+    return (res);
+  },
   staleTime: 1000 * 60 * 5,
   gcTime: 1000 * 60 * 60
 });
